@@ -32,9 +32,7 @@ class WidgetManager(Frame):
 
     def create_placeholder_canvas(self, anchor, default_image):
         # generate canvas to hold images
-        canvas = Canvas(self.master)
-        # expand and center canvas
-        canvas.pack(expand=0)
+        canvas = Canvas(self.master, relief='solid', bd=2)
         canvas.place(relx=0.5, rely=0.5, anchor=anchor)
         # configure placeholder image
         label_placeholder = Label(canvas, image=default_image)
