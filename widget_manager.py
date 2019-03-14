@@ -40,7 +40,7 @@ class WidgetManager(Frame):
                         bd=2,
                         width=self.frame_dim,
                         height=self.frame_dim)
-        canvas.place(relx=0.5, rely=0.5, anchor=anchor)
+        canvas.place(relx=0.5, rely=0.45, anchor=anchor)
         # configure placeholder image
         label_placeholder = Label(canvas, image=default_image)
         label_placeholder.configure(image=default_image)
@@ -56,12 +56,12 @@ class WidgetManager(Frame):
             return
         if os.path.isfile(img_path):
             # TODO: Add for final app to prevent users from uploading invalid files
-            #try:
-            img, _ = get_pre_processed_img(img_path, (self.frame_dim-5))
-            img = Image.fromarray(img)
-            self.upload_logo = ImageTk.PhotoImage(img)
-            self.input_img.configure(image=self.upload_logo)
-            #except:
-            #    self.error_msg.configure(text='Failed to load File!')
+            try:
+                img = get_pre_processed_img(img_path, (self.frame_dim-5))
+                img = Image.fromarray(img)
+                self.upload_logo = ImageTk.PhotoImage(img)
+                self.input_img.configure(image=self.upload_logo)
+            except:
+                self.error_msg.configure(text='Failed to load File!')
 
 
