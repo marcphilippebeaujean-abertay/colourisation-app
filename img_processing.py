@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 
 def fit_to_canvas(img, max_dim):
@@ -12,14 +13,18 @@ def fit_to_canvas(img, max_dim):
 
 
 def get_pre_processed_img(file_path, max_dim):
-    # load image
-    img = cv2.imread(file_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # load image and extract alpha channel
+    img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+    alpha = img[:,:,3]
+    # make colour conversion
+    out_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # add alpha information after conversions
+    out_img = np.dstack([out_img, alpha])
     # fit image to canvas
-    img = fit_to_canvas(img, max_dim)
+    out_img = fit_to_canvas(out_img, max_dim)
     # generate lab version
     lab_img = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
     # return all versions
-    return img, lab_img
+    return out_img, lab_img
 
 
