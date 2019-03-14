@@ -7,7 +7,7 @@ root = Tk()
 root.resizable(False, False)
 root.geometry('800x350')
 # Initialise ui definitions class
-wind = Window(root)
-clr_mgr = WidgetManager(root)
+window = Window(root)
+user_interface = WidgetManager(root)
 # Run application
 root.mainloop()
