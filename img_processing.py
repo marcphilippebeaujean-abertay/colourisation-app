@@ -14,6 +14,7 @@ def fit_to_canvas(img, max_dim):
 def get_pre_processed_img(file_path, max_dim):
     # load image
     img = cv2.imread(file_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     # fit image to canvas
     img = fit_to_canvas(img, max_dim)
     # generate lab version

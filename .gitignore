@@ -84,4 +84,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Other
 .idea/
+.DS_Store
