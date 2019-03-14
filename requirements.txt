@@ -1,0 +1,4 @@
+Django==2.1.7
+image==1.5.27
+Pillow==5.4.1
+pytz==2018.9
