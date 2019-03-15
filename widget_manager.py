@@ -3,7 +3,6 @@ from tkinter.filedialog import askopenfilename
 from img_processing import get_pre_processed_img
 from PIL import ImageTk, Image
 import os
-import time
 
 
 class WidgetManager(Frame):
@@ -22,7 +21,7 @@ class WidgetManager(Frame):
         self.frame_dim = frame_dimension
         self.create_widget_layout()
         # define state management variables
-        self.update_loading_seq = self.init_loading().__next__
+        self.update_loading_seq = None
 
     def create_widget_layout(self):
         # generate canvas to hold images
@@ -66,17 +65,19 @@ class WidgetManager(Frame):
                 self.input_label.configure(image=self.source_img)
                 self.error_msg.configure(text='')
                 # start loading animation
-                self.master.after(100, self.update_loading_seq)
+                self.update_loading_seq = self.init_loading().__next__
+                self.master.after(10, self.update_loading_seq)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
 
     def init_loading(self):
-        angle = 0
+        angle = 359
         loading_img = Image.open(os.path.join(os.getcwd(), 'loading_img.png'))
         while True:
             self.output_img = ImageTk.PhotoImage(loading_img.rotate(angle))
             self.output_label.configure(image=self.output_img)
-            self.master.after_idle(self.update_loading_seq)
+            if angle > 260:
+                self.master.after_idle(self.update_loading_seq)
             yield
             angle -= 1
             angle %= 360
