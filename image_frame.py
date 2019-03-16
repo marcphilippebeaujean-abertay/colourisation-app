@@ -22,6 +22,7 @@ class ImageFrame:
         self.img_label = Label(self.canvas, image=self.img)
         self.img_label.configure(image=self.img)
         self.img_label.place(relx=0.5, rely=0.5, anchor=CENTER)
+        # configure animation variables
         self.is_loading = False
         self.anim_generator = None
 
@@ -30,14 +31,15 @@ class ImageFrame:
         self.img = img_file
         self.img_label.configure(image=self.img)
 
-    def init_loading_sequence(self):
-        if self.anim_generator is None:
-            raise GeneratorExit('animation generator not assigned')
+    def init_animation(self, anim):
+        self.anim_generator = anim
+        self.master.after(1, self.anim_generator)
+
+    def loading_anim(self):
         self.is_loading = True
         angle = 0
         loading_img = Image.open(os.path.join(os.getcwd(), 'loading_img.png'))
         while True:
-            print('spinning...')
             self.img = ImageTk.PhotoImage(loading_img.rotate(angle))
             self.img_label.configure(image=self.img)
             if self.is_loading:
@@ -45,6 +47,6 @@ class ImageFrame:
             else:
                 return
             yield
-            print('angle update')
             angle -= 1
             angle %= 360
+

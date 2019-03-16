@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from img_processing import get_pre_processed_img
+from model_manager import ModelOutputManager
 from image_frame import ImageFrame
 from PIL import ImageTk, Image
 import os
@@ -14,9 +15,7 @@ class WidgetManager(Frame):
         self.source_img = ImageFrame(self.master,
                                      E,
                                      os.path.join(os.getcwd(), 'upload_logo.png'))
-        self.output_img = ImageFrame(self.master,
-                                     W,
-                                     os.path.join(os.getcwd(), 'eye_logo.png'))
+        self.output_mgr = ModelOutputManager(self.master)
         # initialise label members
         self.error_msg = Label(self.master,
                                text='',
@@ -43,6 +42,7 @@ class WidgetManager(Frame):
         if len(img_path) is 0:
             return
         if os.path.isfile(img_path):
+            img = None
             try:
                 # adjust image to fit to canvas
                 img = get_pre_processed_img(img_path,
@@ -51,9 +51,9 @@ class WidgetManager(Frame):
                 # apply widget updates
                 self.source_img.update_img(ImageTk.PhotoImage(img))
                 self.error_msg.configure(text='')
-                # start loading animation
-                self.output_img.anim_generator = self.output_img.init_loading_sequence().__next__
-                self.master.after(10, self.output_img.anim_generator)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
-
+                return
+            if img:
+                # start loading animation
+                self.output_mgr.generate_prediction(input_img=img)
