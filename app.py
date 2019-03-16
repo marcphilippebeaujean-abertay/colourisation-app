@@ -2,12 +2,12 @@ from tkinter import *
 from window_manager import Window
 from widget_manager import WidgetManager
 
-# Define window
+# define window
 root = Tk()
 root.resizable(False, False)
 root.geometry('800x350')
-# Initialise ui definitions class
+# initialise ui definitions class
 window = Window(root)
 user_interface = WidgetManager(root)
-# Run application
+# run application
 root.mainloop()
