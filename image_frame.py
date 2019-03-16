@@ -33,7 +33,7 @@ class ImageFrame:
 
     def init_animation(self, anim):
         self.anim_generator = anim
-        self.master.after(10, self.anim_generator)
+        self.master.after_idle(self.anim_generator)
 
     def loading_anim(self):
         self.is_loading = True

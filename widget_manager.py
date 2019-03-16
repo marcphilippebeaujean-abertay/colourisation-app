@@ -51,8 +51,6 @@ class WidgetManager(Frame):
                 # apply widget updates
                 self.source_img.update_img(ImageTk.PhotoImage(img))
                 self.error_msg.configure(text='')
-                # start loading animation
-                self.output_img.init_animation(self.output_img.loading_anim().__next__)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
                 return
