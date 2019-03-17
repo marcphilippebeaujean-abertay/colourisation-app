@@ -17,6 +17,6 @@ def load_model(model_dir):
 def generate_prediction(input_img, model_name='c_ae_model'):
     model_path = os.path.join(os.getcwd(), 'model_info', model_name)
     model = load_model(model_path)
-    #input_img = prepare_for_prediction(input_img)
-    print('loaded model')
-
+    input_img = prepare_for_prediction(input_img)
+    print('made prediction')
+    return input_img

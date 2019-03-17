@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from img_processing import load_to_canvas
-from queue import Queue
 from image_frame import ImageFrame
 from PIL import ImageTk, Image
 import os
@@ -47,20 +46,21 @@ class WidgetManager(Frame):
         if len(img_path) is 0:
             return
         if os.path.isfile(img_path):
-            img = None
             try:
                 # adjust image to fit to canvas
-                img = load_to_canvas(img_path,
+                img_source = load_to_canvas(img_path,
                                      (self.source_img.frame_dim-5))
-                img = Image.fromarray(img)
+                img = Image.fromarray(img_source)
                 # apply widget updates
                 self.source_img.update_img(ImageTk.PhotoImage(img))
                 self.error_msg.configure(text='')
+                # create animation
+                self.output_img.init_animation(self.output_img.loading_anim().__next__)
+                self.queue.put(img_source)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
                 return
-            if img:
-                # start loading animation
-                self.output_img.init_animation(self.output_img.loading_anim().__next__)
-                self.queue.put(img)
+
+    def update_prediction_img(self):
+        print('updating prediction img...')
 
