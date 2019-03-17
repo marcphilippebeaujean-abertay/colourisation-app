@@ -1,21 +1,24 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
-from img_processing import get_pre_processed_img
-from model_manager import ModelOutputManager
+from img_processing import load_to_canvas
+from queue import Queue
 from image_frame import ImageFrame
 from PIL import ImageTk, Image
 import os
 
 
 class WidgetManager(Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, queue=None):
         Frame.__init__(self, master)
         self.master = master
         # define default widget images
         self.source_img = ImageFrame(self.master,
                                      E,
                                      os.path.join(os.getcwd(), 'upload_logo.png'))
-        self.output_mgr = ModelOutputManager(self.master)
+        # generate model output canvas/frame
+        self.output_img = ImageFrame(self.master,
+                                     W,
+                                     os.path.join(os.getcwd(), 'eye_logo.png'))
         # initialise label members
         self.error_msg = Label(self.master,
                                text='',
@@ -24,6 +27,8 @@ class WidgetManager(Frame):
         self.error_msg.pack(side=BOTTOM)
         # generate initial widget layout
         self.create_widget_layout()
+        # reference to threading queue
+        self.queue = queue
 
     def create_widget_layout(self):
         # add button for configuring images
@@ -45,8 +50,8 @@ class WidgetManager(Frame):
             img = None
             try:
                 # adjust image to fit to canvas
-                img = get_pre_processed_img(img_path,
-                                            (self.source_img.frame_dim-5))
+                img = load_to_canvas(img_path,
+                                     (self.source_img.frame_dim-5))
                 img = Image.fromarray(img)
                 # apply widget updates
                 self.source_img.update_img(ImageTk.PhotoImage(img))
@@ -56,5 +61,6 @@ class WidgetManager(Frame):
                 return
             if img:
                 # start loading animation
-                self.output_mgr.generate_prediction(input_img=img)
+                self.output_img.init_animation(self.output_img.loading_anim().__next__)
+                self.queue.put(img)
 

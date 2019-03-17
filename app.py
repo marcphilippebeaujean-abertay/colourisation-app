@@ -1,13 +1,10 @@
 from tkinter import *
-from window_manager import Window
-from widget_manager import WidgetManager
+from threaded_client import ThreadedClient
 
 # define window
 root = Tk()
 root.resizable(False, False)
 root.geometry('800x350')
-# initialise ui definitions class
-window = Window(root)
-user_interface = WidgetManager(root)
+client = ThreadedClient(root)
 # run application
 root.mainloop()
