@@ -18,10 +18,10 @@ def load_model(model_dir):
 def generate_prediction(input_img, model_name='c_ae_model'):
     model_path = os.path.join(os.getcwd(), 'model_info', model_name)
     model = load_model(model_path)
-    prepd_img = np.asarray(prepare_for_prediction(input_img))
-    img_rows, img_cols = prepd_img.shape[0], prepd_img.shape[1]
+    pp_img = np.asarray(prepare_for_prediction(input_img))
+    img_rows, img_cols = pp_img.shape[0], pp_img.shape[1]
     # reshaping required to meet input requirements for predictions
     net_input = np.empty((1, img_rows, img_cols, 1))
-    net_input[0, :] = prepd_img[..., :1]
+    net_input[0, :] = pp_img[..., :1]
     pred = model.predict(net_input)
-    return pred
+    return process_net_output(pred, pp_img, input_img)

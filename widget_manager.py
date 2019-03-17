@@ -1,8 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
-from img_processing import load_to_canvas
+from img_processing import load_to_canvas, cv_to_tk_img
 from image_frame import ImageFrame
-from PIL import ImageTk, Image
 import os
 
 
@@ -50,9 +49,8 @@ class WidgetManager(Frame):
                 # adjust image to fit to canvas
                 img_source = load_to_canvas(img_path,
                                      (self.source_img.frame_dim-5))
-                img = Image.fromarray(img_source)
                 # apply widget updates
-                self.source_img.update_img(ImageTk.PhotoImage(img))
+                self.source_img.update_img(cv_to_tk_img(img_source))
                 self.error_msg.configure(text='')
                 # create animation
                 self.output_img.init_animation(self.output_img.loading_anim().__next__)
@@ -60,7 +58,4 @@ class WidgetManager(Frame):
             except:
                 self.error_msg.configure(text='Failed to load Image!')
                 return
-
-    def update_prediction_img(self):
-        print('updating prediction img...')
 

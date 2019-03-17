@@ -1,4 +1,5 @@
 from network_prediction import generate_prediction
+from img_processing import cv_to_tk_img
 from window_def import Window
 from widget_manager import WidgetManager
 from queue import Queue
@@ -35,12 +36,9 @@ class ThreadedClient:
 
     def periodic_call(self):
         if self.output_queue.empty() is False:
-            prediction = self.output_queue.get()
-            print('got a prediction from the output queue!')
-            self.widgets.update_prediction_img()
+            prediction = cv_to_tk_img(self.output_queue.get())
+            self.widgets.output_img.update_img(prediction)
         if not self.running:
-            # This is the brutal stop of the system. You may want to do
-            # some cleanup before actually shutting it down.
             import sys
             sys.exit(1)
         self.master.after(200, self.periodic_call)

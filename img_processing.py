@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from PIL import ImageTk, Image
 
 
 def fit_to_canvas(img, max_dim):
@@ -36,9 +37,39 @@ def prepare_for_prediction(img, pred_dim=(32, 32)):
     return img
 
 
-def process_net_output(net_output, net_input):
-    print('lpol')
+def denormalize_channel(min_val, max_val, channel_val):
+    channel_val *= (min_val+max_val)
+    channel_val -= min_val
 
+
+def process_net_output(net_output, net_input, original_image):
+    # initialise array
+    img_shape = (net_output.shape[1],
+                 net_output.shape[2],
+                 3)
+    final_output = np.zeros(img_shape)
+    final_output = final_output.astype(np.float32)
+    # concatenate luminance values and denormalize
+    final_output[..., :1] = net_input[..., :1]
+    denormalize_channel(0, 100, final_output[..., :1])
+    # add network output predictions to image
+    final_output[..., 1:] = net_output
+    denormalize_channel(127, 128, final_output[..., 1:2])
+    denormalize_channel(128, 127, final_output[..., 2:])
+    # scale up image
+    final_output = cv2.resize(final_output,
+                              (original_image.shape[1],
+                               original_image.shape[0]))
+    final_output[..., :1] = cv2.cvtColor(original_image,
+                                         cv2.COLOR_RGB2LAB)[..., :1]
+    final_output = cv2.cvtColor(final_output, cv2.COLOR_LAB2RGB)
+    print(final_output.shape)
+    return final_output
+
+
+def cv_to_tk_img(img):
+    img = Image.fromarray(img)
+    return ImageTk.PhotoImage(img)
 
 
 
