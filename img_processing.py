@@ -30,10 +30,14 @@ def prepare_for_prediction(img, pred_dim=(32, 32)):
     if not isinstance(pred_dim, tuple):
         raise TypeError('dimensions was not a tuple')
     # sample image to network input
-    cv2.resize(img, pred_dim, interpolation=cv2.INTER_CUBIC)
+    img = cv2.resize(img, pred_dim, interpolation=cv2.INTER_CUBIC)
     # convert image to lab
     img = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
     return img
+
+
+def process_net_output(net_output, net_input):
+    print('lpol')
 
 
 
