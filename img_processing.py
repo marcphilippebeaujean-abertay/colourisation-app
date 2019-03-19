@@ -6,11 +6,13 @@ from PIL import ImageTk, Image
 def fit_to_canvas(img, max_dim):
     # retrieve image dimensions
     height, width = img.shape[:2]
-    # rescale image if appropriate, to fit canvas
-    ratio = min(max_dim / width, max_dim / height)
-    width *= ratio
-    height *= ratio
-    return cv2.resize(img, (int(width), int(height)), interpolation=cv2.INTER_CUBIC)
+    if height > max_dim or width > max_dim:
+        # rescale image if appropriate, to fit canvas
+        ratio = min(max_dim / width, max_dim / height)
+        width *= ratio
+        height *= ratio
+        img = cv2.resize(img, (int(width), int(height)), interpolation=cv2.INTER_CUBIC)
+    return img
 
 
 def load_to_canvas(file_path, max_dim):
@@ -18,14 +20,13 @@ def load_to_canvas(file_path, max_dim):
     img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
     # make colour conversion
     out_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # fit image to canvas
+    out_img = fit_to_canvas(out_img, max_dim)
     # add alpha information after conversions
-    print(img.shape)
     if img.shape[2] > 3:
         alpha = img[:,:,3]
         out_img = np.dstack([out_img, alpha])
-    # fit image to canvas
-    out_img = fit_to_canvas(out_img, max_dim)
-    # return all versions
+    # return final version
     return out_img
 
 
