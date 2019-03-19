@@ -3,6 +3,13 @@ import numpy as np
 from PIL import ImageTk, Image
 
 
+def add_alpha(out_img, original_img):
+    if original_img.shape[2] > 3:
+        alpha = original_img[:, :, 3]
+        out_img = np.dstack([out_img, alpha])
+    return out_img
+
+
 def fit_to_canvas(img, max_dim):
     # retrieve image dimensions
     height, width = img.shape[:2]
@@ -20,12 +27,10 @@ def load_to_canvas(file_path, max_dim):
     img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
     # make colour conversion
     out_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # add alpha information after conversions
+    out_img = add_alpha(out_img, img)
     # fit image to canvas
     out_img = fit_to_canvas(out_img, max_dim)
-    # add alpha information after conversions
-    if img.shape[2] > 3:
-        alpha = img[:,:,3]
-        out_img = np.dstack([out_img, alpha])
     # return final version
     return out_img
 
@@ -53,7 +58,6 @@ def denormalize_channel(min_val, max_val, channel_val):
 
 def process_net_output(net_output, net_input, original_image):
     # initialise array
-    alpha = original_image[:, :, 3]
     img_shape = (net_output.shape[1], net_output.shape[2], 3)
     final_output = np.zeros(img_shape)
     final_output = final_output.astype(np.float32)
@@ -68,12 +72,10 @@ def process_net_output(net_output, net_input, original_image):
     final_output = cv2.resize(final_output,
                               (original_image.shape[1],
                                original_image.shape[0]))
-    fin_output_lab = cv2.cvtColor(original_image,
-                                  cv2.COLOR_RGB2LAB)
+    fin_output_lab = cv2.cvtColor(original_image, cv2.COLOR_RGB2LAB)
     final_output[..., :1] = fin_output_lab[..., :1]
-    final_output = cv2.cvtColor(final_output,
-                                cv2.COLOR_LAB2RGB)
-    final_output = np.dstack([final_output, alpha])
+    final_output = cv2.cvtColor(final_output, cv2.COLOR_LAB2RGB)
+    final_output = add_alpha(final_output, original_image)
     return cv2_to_tk_img(np.uint8(final_output))
 
 
