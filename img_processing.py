@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from skimage.color import lab2rgb, rgb2lab
 from PIL import ImageTk, Image
 
 
@@ -56,26 +57,26 @@ def denormalize_channel(min_val, max_val, channel_val):
     channel_val -= min_val
 
 
-def process_net_output(net_output, net_input, original_image):
+def process_net_output(net_output, original_image):
     # initialise array
+    #original_image = original_image.astype(np.float32)
     img_shape = (net_output.shape[1], net_output.shape[2], 3)
     final_output = np.zeros(img_shape)
     final_output = final_output.astype(np.float32)
-    # concatenate luminance values and denormalize
-    final_output[..., :1] = net_input[..., :1]
-    denormalize_channel(0, 100, final_output[..., :1])
     # add network output predictions to image
-    final_output[..., 1:] = net_output
-    denormalize_channel(127, 128, final_output[..., 1:2])
-    denormalize_channel(128, 127, final_output[..., 2:])
+    #final_output[..., 1:] = net_output
+    #denormalize_channel(86.1813, 98.2352, final_output[..., 1:2])
+    #denormalize_channel(107.862, 94.4758, final_output[..., 2:])
     # scale up image
-    final_output = cv2.resize(final_output,
-                              (original_image.shape[1],
-                               original_image.shape[0]))
-    fin_output_lab = cv2.cvtColor(original_image, cv2.COLOR_RGB2LAB)
+    #final_output = cv2.resize(final_output,
+    #                          (original_image.shape[1],
+    #                           original_image.shape[0]))
+    fin_output_lab = rgb2lab(original_image)
     final_output[..., :1] = fin_output_lab[..., :1]
-    final_output = cv2.cvtColor(final_output, cv2.COLOR_LAB2RGB)
-    final_output = add_alpha(final_output, original_image)
+    final_output = lab2rgb(final_output)
+    print(final_output)
+    final_output *= 255
+    #final_output = add_alpha(final_output, original_image)
     return cv2_to_tk_img(np.uint8(final_output))
 
 

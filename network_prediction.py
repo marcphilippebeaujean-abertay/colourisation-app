@@ -24,11 +24,12 @@ def generate_prediction(input_img, model_name='c_ae_model'):
     img_rows, img_cols = pp_img.shape[0], pp_img.shape[1]
     # reshaping required to meet input requirements for predictions
     net_input = np.empty((1, img_rows, img_cols, 1))
-    net_input[0, :] = pp_img[..., :1]
+    # assign luminance channel of image as input
+    net_input[0] = pp_img[..., :1]
     # generate prediction
     pred = model.predict(net_input)
-    print(pred)
-    return process_net_output(pred, net_input, input_img)
+    return process_net_output(pred, input_img)
+    #return cv2.cvtColor(pp_img, cv2.COLOR_LAB2RGB)
 
 
 class PredictionThread(Thread):
