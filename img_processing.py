@@ -46,6 +46,7 @@ def denormalize_channel(min_val, max_val, channel_val):
 
 def process_net_output(net_output, net_input, original_image):
     # initialise array
+    alpha = original_image[:, :, 3]
     img_shape = (net_output.shape[1],
                  net_output.shape[2],
                  3)
@@ -65,13 +66,13 @@ def process_net_output(net_output, net_input, original_image):
     final_output[..., :1] = cv2.cvtColor(original_image,
                                          cv2.COLOR_RGB2LAB)[..., :1]
     final_output = cv2.cvtColor(final_output, cv2.COLOR_LAB2RGB)
+    final_output = np.dstack([final_output, alpha])
     print(final_output.shape)
     return cv2_to_tk_img(np.uint8(final_output))
 
-
 def cv2_to_tk_img(img):
-    img = Image.fromarray(img)
-    return ImageTk.PhotoImage(img)
+    tk_img = Image.fromarray(img)
+    return ImageTk.PhotoImage(tk_img)
 
 
 

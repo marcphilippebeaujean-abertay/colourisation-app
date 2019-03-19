@@ -1,4 +1,3 @@
-from window_def import Window
 from widget_manager import WidgetManager
 from queue import Queue
 from network_prediction import PredictionThread
@@ -12,7 +11,6 @@ class ThreadedClient:
         self.input_queue = Queue()
         self.output_queue = Queue()
         # setup widget manager
-        self.window = Window(master)
         self.widgets = WidgetManager(master,
                                      self.input_queue)
         # create threads setup

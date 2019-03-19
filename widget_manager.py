@@ -26,7 +26,7 @@ class WidgetManager(Frame):
         # generate initial widget layout
         self.create_widget_layout()
         # reference to threading queue
-        self.queue = queue
+        self.input_queue = queue
 
     def create_widget_layout(self):
         # add button for configuring images
@@ -48,13 +48,14 @@ class WidgetManager(Frame):
             try:
                 # adjust image to fit to canvas
                 img_source = load_to_canvas(img_path,
-                                     (self.source_img.frame_dim-5))
+                                            (self.source_img.frame_dim-5))
+                # add image to the queue
+                self.input_queue.put(img_source)
                 # apply widget updates
                 self.source_img.update_img(cv2_to_tk_img(img_source))
                 self.error_msg.configure(text='')
                 # create animation
                 self.output_img.init_animation(self.output_img.loading_anim().__next__)
-                self.queue.put(img_source)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
                 return
