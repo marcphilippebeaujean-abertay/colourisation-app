@@ -45,18 +45,18 @@ class WidgetManager(Frame):
         if len(img_path) is 0:
             return
         if os.path.isfile(img_path):
-            try:
-                # adjust image to fit to canvas
-                img_source = load_to_canvas(img_path,
-                                            (self.source_img.frame_dim-5))
-                # add image to the queue
-                self.input_queue.put(img_source)
-                # apply widget updates
-                self.source_img.update_img(cv2_to_tk_img(img_source))
-                self.error_msg.configure(text='')
-                # create animation
-                self.output_img.init_animation(self.output_img.loading_anim().__next__)
-            except:
-                self.error_msg.configure(text='Failed to load Image!')
-                return
+            #try:
+            # adjust image to fit to canvas
+            img_source = load_to_canvas(img_path,
+                                        (self.source_img.frame_dim-5))
+            # add image to the queue
+            self.input_queue.put(img_source)
+            # apply widget updates
+            self.source_img.update_img(cv2_to_tk_img(img_source))
+            self.error_msg.configure(text='')
+            # create animation
+            self.output_img.init_animation(self.output_img.loading_anim().__next__)
+            #except:
+            #    self.error_msg.configure(text='Failed to load Image!')
+            #    return
 

@@ -25,7 +25,9 @@ def generate_prediction(input_img, model_name='c_ae_model'):
     # reshaping required to meet input requirements for predictions
     net_input = np.empty((1, img_rows, img_cols, 1))
     net_input[0, :] = pp_img[..., :1]
+    # generate prediction
     pred = model.predict(net_input)
+    print(pred)
     return process_net_output(pred, net_input, input_img)
 
 
@@ -42,7 +44,6 @@ class PredictionThread(Thread):
             # check if queue contains a new prediction to make
             if self.input_queue.empty() is False:
                 img = self.input_queue.get()
-                print(img)
                 pred = generate_prediction(input_img=img)
                 self.output_queue.put(pred)
             else:
