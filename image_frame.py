@@ -29,7 +29,7 @@ class ImageFrame:
     def update_img(self, img_file):
         self.is_loading = False
         self.img = img_file
-        self.img_label.configure(image=self.img)
+        self.img_label.configure(image=img_file)
 
     def init_animation(self, anim):
         self.anim_generator = anim
@@ -40,14 +40,16 @@ class ImageFrame:
         angle = 0
         loading_img = Image.open(os.path.join(os.getcwd(), 'loading_img.png'))
         while True:
-            self.img = ImageTk.PhotoImage(loading_img.rotate(angle))
-            self.img_label.configure(image=self.img)
-            if self.is_loading:
-                self.master.after_idle(self.anim_generator)
-            else:
-                return
-            yield
-            angle -= 1
-            angle %= 360
+            try:
+                if self.is_loading:
+                    self.master.after_idle(self.anim_generator)
+                    self.img = ImageTk.PhotoImage(loading_img.rotate(angle))
+                    self.img_label.configure(image=self.img)
+                yield
+                angle -= 1
+                angle %= 360
+            except StopIteration as e:
+                break
+
 
 

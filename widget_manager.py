@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
-from img_processing import load_to_canvas, cv_to_tk_img
+from img_processing import load_to_canvas, cv2_to_tk_img
 from image_frame import ImageFrame
 import os
 
@@ -50,7 +50,7 @@ class WidgetManager(Frame):
                 img_source = load_to_canvas(img_path,
                                      (self.source_img.frame_dim-5))
                 # apply widget updates
-                self.source_img.update_img(cv_to_tk_img(img_source))
+                self.source_img.update_img(cv2_to_tk_img(img_source))
                 self.error_msg.configure(text='')
                 # create animation
                 self.output_img.init_animation(self.output_img.loading_anim().__next__)

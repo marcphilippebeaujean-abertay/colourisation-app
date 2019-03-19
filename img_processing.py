@@ -10,7 +10,9 @@ def fit_to_canvas(img, max_dim):
     ratio = min(max_dim / width, max_dim / height)
     width *= ratio
     height *= ratio
-    return cv2.resize(img, (int(width), int(height)), interpolation=cv2.INTER_CUBIC)
+    return cv2.resize(img,
+                      (int(width), int(height)),
+                      interpolation=cv2.INTER_CUBIC)
 
 
 def load_to_canvas(file_path, max_dim):
@@ -64,10 +66,10 @@ def process_net_output(net_output, net_input, original_image):
                                          cv2.COLOR_RGB2LAB)[..., :1]
     final_output = cv2.cvtColor(final_output, cv2.COLOR_LAB2RGB)
     print(final_output.shape)
-    return final_output
+    return cv2_to_tk_img(np.uint8(final_output))
 
 
-def cv_to_tk_img(img):
+def cv2_to_tk_img(img):
     img = Image.fromarray(img)
     return ImageTk.PhotoImage(img)
 
