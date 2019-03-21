@@ -30,9 +30,7 @@ def generate_prediction(input_img, model_name='c_ae_model'):
     net_input /= 100
     # generate prediction
     pred = model.predict(net_input)
-    print(pred)
     return process_net_output(pred, input_img)
-    #return cv2.cvtColor(pp_img, cv2.COLOR_LAB2RGB)
 
 
 class PredictionThread(Thread):

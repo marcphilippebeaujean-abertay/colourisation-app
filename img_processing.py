@@ -42,7 +42,7 @@ def prepare_for_prediction(img, pred_dim=(32, 32)):
     # sample image to network input
     img = cv2.resize(img, pred_dim, interpolation=cv2.INTER_CUBIC)
     # convert image to lab
-    img = rgb2lab(img)
+    img = rgb2lab(img[..., :3])
     return img
 
 
@@ -58,19 +58,22 @@ def process_net_output(net_output, original_image):
     final_output = final_output.astype(np.float32)
     # add network output predictions to image
     final_output[..., 1:] = net_output
-    # denormalise the channels
-    denormalize_channel(127, 128, final_output[..., 1:2])
-    denormalize_channel(128, 127, final_output[..., 2:])
+    # denormalize the channels
+    denormalize_channel(128, 127, final_output[..., 1:2])
+    denormalize_channel(127, 128, final_output[..., 2:])
     # scale up chrominance output from network to original size
     final_output = cv2.resize(final_output,
                               (original_image.shape[1],
                                original_image.shape[0]))
-    fin_output_lab = rgb2lab(original_image)
+    fin_output_lab = rgb2lab(original_image[..., :3])
     # use luminance from original image
     final_output[..., :1] = fin_output_lab[..., :1]
     final_output = lab2rgb(final_output)
     # denormalize rgb output (will be in range 0 - 1)
     final_output *= 255
+    # apply alpha channel if necessary
+    height, width = original_image.shape[:2]
+    final_output = cv2.resize(final_output, (width, height))
     final_output = add_alpha(final_output, original_image)
     return cv2_to_tk_img(np.uint8(final_output))
 
