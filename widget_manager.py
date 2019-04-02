@@ -12,11 +12,17 @@ class WidgetManager(Frame):
         # define default widget images
         self.source_img = ImageFrame(self.master,
                                      E,
-                                     os.path.join(os.getcwd(), 'upload_logo.png'))
+                                     os.path.join(os.getcwd(),
+                                                  'images',
+                                                  'icons',
+                                                  'upload_logo.png'))
         # generate model output canvas/frame
         self.output_img = ImageFrame(self.master,
                                      W,
-                                     os.path.join(os.getcwd(), 'eye_logo.png'))
+                                     os.path.join(os.getcwd(),
+                                                  'images',
+                                                  'icons',
+                                                  'eye_logo.png'))
         # initialise label members
         self.error_msg = Label(self.master,
                                text='',

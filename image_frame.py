@@ -38,7 +38,10 @@ class ImageFrame:
     def loading_anim(self):
         self.is_loading = True
         angle = 0
-        loading_img = Image.open(os.path.join(os.getcwd(), 'loading_img.png'))
+        loading_img = Image.open(os.path.join(os.getcwd(),
+                                              'images',
+                                              'icons',
+                                              'loading_img.png'))
         while True:
             try:
                 if self.is_loading:

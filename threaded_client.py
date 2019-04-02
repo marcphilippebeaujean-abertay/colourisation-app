@@ -16,6 +16,7 @@ class ThreadedClient:
         # create threads setup
         self.pred_thread = PredictionThread(self.input_queue,
                                             self.output_queue)
+        self.pred_thread.daemon = True
         self.pred_thread.start()
         # create periodic call that checks for predictions
         self.periodic_call()
@@ -24,9 +25,6 @@ class ThreadedClient:
         if self.output_queue.empty() is False:
             prediction = self.output_queue.get()
             self.widgets.output_img.update_img(prediction)
-        if not self.pred_thread.running:
-            import sys
-            sys.exit(1)
         self.master.after(200, self.periodic_call)
 
     def end_application(self):

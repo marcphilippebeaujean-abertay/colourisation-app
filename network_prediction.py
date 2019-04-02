@@ -38,16 +38,15 @@ class PredictionThread(Thread):
         super().__init__()
         self.input_queue = input_queue
         self.output_queue = output_queue
-        self.running = False
+        self.running = True
 
     def run(self):
-        self.running = True
         while self.running:
             # check if queue contains a new prediction to make
             if self.input_queue.empty() is False:
+                print('processing from input queue')
                 img = self.input_queue.get()
                 pred = generate_prediction(input_img=img)
                 self.output_queue.put(pred)
-                break
             else:
                 sleep(0.1)
