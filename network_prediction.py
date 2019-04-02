@@ -48,5 +48,6 @@ class PredictionThread(Thread):
                 img = self.input_queue.get()
                 pred = generate_prediction(input_img=img)
                 self.output_queue.put(pred)
+                break
             else:
                 sleep(0.1)
