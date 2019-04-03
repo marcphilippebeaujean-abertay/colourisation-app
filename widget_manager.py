@@ -2,11 +2,12 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from img_processing import load_to_canvas, cv2_to_tk_img
 from image_frame import ImageFrame
+from model_toggle import ModelToggle
 import os
 
 
 class WidgetManager(Frame):
-    def __init__(self, master=None, queue=None):
+    def __init__(self, master, queue):
         Frame.__init__(self, master)
         self.master = master
         # define default widget images
@@ -29,12 +30,8 @@ class WidgetManager(Frame):
                                fg='red',
                                font=('Helvetica', 20))
         self.error_msg.pack(side=BOTTOM)
-        # generate initial widget layout
-        self.create_widget_layout()
         # reference to threading queue
         self.input_queue = queue
-
-    def create_widget_layout(self):
         # add button for configuring images
         choose_file = Button(self.source_img.canvas,
                              text='Choose File',
@@ -42,6 +39,7 @@ class WidgetManager(Frame):
         choose_file.place(relx=0.5,
                           rely=0.9,
                           anchor=N)
+        self.model_toggle = ModelToggle(master)
 
     def load_img(self):
         img_path = askopenfilename(initialdir=os.getcwd(),
@@ -56,7 +54,8 @@ class WidgetManager(Frame):
                 img_source = load_to_canvas(img_path,
                                             (self.source_img.frame_dim-5))
                 # add image to the queue
-                self.input_queue.put(img_source)
+                self.input_queue.put((img_source,
+                                      self.model_toggle.tk_model_dir.get()))
                 # apply widget updates
                 self.source_img.update_img(cv2_to_tk_img(img_source))
                 self.error_msg.configure(text='')

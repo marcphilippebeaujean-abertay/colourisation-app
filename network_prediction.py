@@ -45,8 +45,10 @@ class PredictionThread(Thread):
             # check if queue contains a new prediction to make
             if self.input_queue.empty() is False:
                 print('processing from input queue')
-                img = self.input_queue.get()
-                pred = generate_prediction(input_img=img)
+                queue_data = self.input_queue.get()
+                img = queue_data[0]
+                pred = generate_prediction(input_img=img,
+                                           model_name=queue_data[1])
                 self.output_queue.put(pred)
             else:
                 sleep(0.1)
