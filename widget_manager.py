@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from img_processing import load_to_canvas, cv2_to_tk_img
 from image_frame import ImageFrame
-from model_toggle import ModelToggle
+from output_frame import OutputFrame
+from model_picker import ModelPicker
 import os
 
 
@@ -18,7 +19,7 @@ class WidgetManager(Frame):
                                                   'icons',
                                                   'upload_logo.png'))
         # generate model output canvas/frame
-        self.output_img = ImageFrame(self.master,
+        self.output_img = OutputFrame(self.master,
                                      W,
                                      os.path.join(os.getcwd(),
                                                   'images',
@@ -39,7 +40,7 @@ class WidgetManager(Frame):
         choose_file.place(relx=0.5,
                           rely=0.9,
                           anchor=N)
-        self.model_toggle = ModelToggle(master)
+        self.model_toggle = ModelPicker(master)
 
     def load_img(self):
         img_path = askopenfilename(initialdir=os.getcwd(),
@@ -63,5 +64,5 @@ class WidgetManager(Frame):
                 self.output_img.init_animation(self.output_img.loading_anim().__next__)
             except:
                 self.error_msg.configure(text='Failed to load Image!')
-                return
+            return
 

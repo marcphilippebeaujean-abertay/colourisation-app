@@ -23,8 +23,8 @@ class ThreadedClient:
 
     def periodic_call(self):
         if self.output_queue.empty() is False:
-            prediction = self.output_queue.get()
-            self.widgets.output_img.update_img(prediction)
+            prediction, chrom = self.output_queue.get()
+            self.widgets.output_img.on_output_generated(prediction, chrom)
         self.master.after(200, self.periodic_call)
 
     def end_application(self):

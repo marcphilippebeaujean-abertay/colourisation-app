@@ -1,5 +1,5 @@
 from keras.models import model_from_json
-from img_processing import prepare_for_prediction, process_net_output
+from img_processing import prepare_for_prediction, process_net_output, generate_chrominance
 from threading import Thread
 from time import sleep
 import os
@@ -30,7 +30,10 @@ def generate_prediction(input_img, model_name='c_ae_model'):
     net_input /= 100
     # generate prediction
     pred = model.predict(net_input)
-    return process_net_output(pred, input_img)
+    # generate chrominance
+    output = process_net_output(pred, input_img)
+    chrom = generate_chrominance(pred, input_img)
+    return output, chrom
 
 
 class PredictionThread(Thread):
@@ -44,7 +47,6 @@ class PredictionThread(Thread):
         while self.running:
             # check if queue contains a new prediction to make
             if self.input_queue.empty() is False:
-                print('processing from input queue')
                 queue_data = self.input_queue.get()
                 img = queue_data[0]
                 pred = generate_prediction(input_img=img,

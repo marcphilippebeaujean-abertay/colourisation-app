@@ -5,10 +5,13 @@ from PIL import ImageTk, Image
 
 
 def add_alpha(out_img, original_img):
-    if original_img.shape[2] > 3:
-        alpha = original_img[:, :, 3]
-        out_img = np.dstack([out_img, alpha])
-    return out_img
+    try:
+        if original_img.shape[2] > 3:
+            alpha = original_img[:, :, 3]
+            out_img = np.dstack([out_img, alpha])
+        return out_img
+    except:
+        return out_img
 
 
 def fit_to_canvas(img, max_dim):
@@ -82,3 +85,15 @@ def cv2_to_tk_img(img):
     tk_img = Image.fromarray(img)
     return ImageTk.PhotoImage(tk_img)
 
+
+def generate_chrominance(ab, input_img):
+    out_img = np.ones((ab.shape[1], ab.shape[2], 3))
+    denormalize_channel(128, 127, ab[..., :1])
+    denormalize_channel(127, 128, ab[..., 1:])
+    out_img[..., :1] *= 50
+    out_img[..., 1:] = ab
+    out_img = lab2rgb(out_img)
+    out_img *= 255
+    out_img = cv2.resize(out_img, (input_img.shape[1], input_img.shape[0]))
+    out_img = add_alpha(out_img, input_img)
+    return cv2_to_tk_img(np.uint8(out_img))
