@@ -11,8 +11,10 @@ class OutputFrame(ImageFrame):
         self.tk_display = StringVar(master)
         self.tk_display.trace('w', self.on_img_updated)
         self.tk_display.set('Output')
-        self.dropdown = OptionMenu(master, self.tk_display, *choices)
-        self.dropdown.place(x=500, y=10)
+        self.dropdown = OptionMenu(self.canvas, self.tk_display, *choices)
+        self.dropdown.place(relx=0.5,
+                            rely=0.89,
+                            anchor=N)
 
     def on_img_updated(self, *kwargs):
         if self.tk_display.get() == 'Output':

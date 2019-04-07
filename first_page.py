@@ -7,24 +7,32 @@ from model_picker import ModelPicker
 import os
 
 
-class WidgetManager(Frame):
-    def __init__(self, master, queue):
+class PageManager(Frame):
+    def __init__(self, master, is_active):
         Frame.__init__(self, master)
-        self.master = master
+        self.is_active = is_active
+
+    def on_page_switch(self):
+        self.is_active = not self.is_active
+
+
+class ImageUploadPageManager(PageManager):
+    def __init__(self, master, queue):
+        PageManager.__init__(self, master, True)
         # define default widget images
-        self.source_img = ImageFrame(self.master,
+        self.source_img = ImageFrame(self,
                                      E,
                                      os.path.join(os.getcwd(),
                                                   'images',
                                                   'icons',
                                                   'upload_logo.png'))
         # generate model output canvas/frame
-        self.output_img = OutputFrame(self.master,
-                                     W,
-                                     os.path.join(os.getcwd(),
-                                                  'images',
-                                                  'icons',
-                                                  'eye_logo.png'))
+        self.output_img = OutputFrame(self,
+                                      W,
+                                      os.path.join(os.getcwd(),
+                                                   'images',
+                                                   'icons',
+                                                   'eye_logo.png'))
         # initialise label members
         self.error_msg = Label(self.master,
                                text='',

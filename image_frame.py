@@ -12,12 +12,12 @@ class ImageFrame:
         self.master = master
         self.frame_dim = frame_dim
         # generate canvas to hold images
-        self.canvas = Canvas(self.master,
+        self.canvas = Canvas(master,
                              relief='solid',
                              bd=2,
                              width=frame_dim,
                              height=frame_dim)
-        self.canvas.place(relx=0.5, rely=0.47, anchor=anchor)
+        self.canvas.pack(anchor=anchor, side=LEFT)
         # configure placeholder image
         self.img_label = Label(self.canvas, image=self.img)
         self.img_label.configure(image=self.img)
