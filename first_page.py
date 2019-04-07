@@ -8,17 +8,18 @@ import os
 
 
 class PageManager(Frame):
-    def __init__(self, master, is_active):
-        Frame.__init__(self, master)
+    def __init__(self, master, is_active, client):
+        Frame.__init__(self, master, width=600, height=300)
         self.is_active = is_active
+        self.client = client
 
     def on_page_switch(self):
         self.is_active = not self.is_active
 
 
 class ImageUploadPageManager(PageManager):
-    def __init__(self, master, queue):
-        PageManager.__init__(self, master, True)
+    def __init__(self, master, queue, client):
+        PageManager.__init__(self, master, True, client)
         # define default widget images
         self.source_img = ImageFrame(self,
                                      E,
@@ -46,9 +47,13 @@ class ImageUploadPageManager(PageManager):
                              text='Choose File',
                              command=lambda: self.load_img())
         choose_file.place(relx=0.5,
-                          rely=0.9,
+                          rely=0.83,
                           anchor=N)
-        self.model_toggle = ModelPicker(master)
+        self.model_toggle = ModelPicker(self.source_img.canvas)
+        self.toggle_b = Button(self, text="Toggle Page", command=self.client.switch_page)
+        self.toggle_b.place(relx=0.5,
+                            rely=0.6,
+                            anchor=N)
 
     def load_img(self):
         img_path = askopenfilename(initialdir=os.getcwd(),

@@ -53,6 +53,3 @@ class ImageFrame:
                 angle %= 360
             except StopIteration as e:
                 break
-
-
-

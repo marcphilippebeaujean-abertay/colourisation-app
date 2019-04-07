@@ -13,10 +13,13 @@ class ThreadedClient:
         self.input_queue = Queue()
         self.output_queue = Queue()
         # setup widget manager
-        self.page_1 = ImageUploadPageManager(self.master,
-                                             self.input_queue)
-        self.page_1.pack()
-        self.page_2 = SecondPageWidgetManager(master)
+        self.page = ImageUploadPageManager(self.master,
+                                           self.input_queue,
+                                           self)
+        self.page.place(relx=0.5,
+                        rely=0.1,
+                        anchor=N)
+        self.cur_page = 0
         # create threads setup
         self.pred_thread = PredictionThread(self.input_queue,
                                             self.output_queue)
@@ -24,20 +27,32 @@ class ThreadedClient:
         self.pred_thread.start()
         # create periodic call that checks for predictions
         self.periodic_call()
-        b = Button(master, text="Toggle Page", command=self.switch_page)
-        b.pack()
 
     def periodic_call(self):
         if self.output_queue.empty() is False:
             prediction, chrom = self.output_queue.get()
-            self.page_1.output_img.on_output_generated(prediction, chrom)
+            self.page.output_img.on_output_generated(prediction, chrom)
         self.master.after(200, self.periodic_call)
 
     def end_application(self):
         self.pred_thread.running = False
 
     def switch_page(self):
-        self.page_1.on_page_switch()
-        self.page_2.on_page_switch()
+        self.page.destroy()
+        new_frame = None
+        if self.cur_page is 1:
+            new_frame = ImageUploadPageManager(self.master,
+                                               self.input_queue,
+                                               self)
+            self.cur_page = 0
+        else:
+            new_frame = ImageUploadPageManager(self.master,
+                                               self.input_queue,
+                                               self)
+            self.cur_page = 1
+        self.page = new_frame
+        self.page.place(relx=0.5,
+                        rely=0.1,
+                        anchor=N)
 
 

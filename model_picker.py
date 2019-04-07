@@ -9,4 +9,6 @@ class ModelPicker:
         self.tk_model_dir.set('c_ae_model')
 
         dropdown = OptionMenu(master, self.tk_model_dir, *choices)
-        dropdown.pack(side=BOTTOM)
+        dropdown.place(relx=0.5,
+                       rely=0.892,
+                       anchor=N)
