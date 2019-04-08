@@ -35,11 +35,13 @@ class ImageUploadPageManager(PageManager):
                                                    'icons',
                                                    'eye_logo.png'))
         # initialise label members
-        self.error_msg = Label(self.master,
+        self.error_msg = Label(self,
                                text='',
                                fg='red',
                                font=('Helvetica', 20))
-        self.error_msg.pack(side=BOTTOM)
+        self.error_msg.place(anchor=N,
+                             relx=0.5,
+                             rely=0.9)
         # reference to threading queue
         self.input_queue = queue
         # add button for configuring images
@@ -52,7 +54,7 @@ class ImageUploadPageManager(PageManager):
         self.model_toggle = ModelPicker(self.source_img.canvas)
         self.toggle_b = Button(self, text="Toggle Page", command=self.client.switch_page)
         self.toggle_b.place(relx=0.5,
-                            rely=0.6,
+                            rely=0.5,
                             anchor=N)
 
     def load_img(self):

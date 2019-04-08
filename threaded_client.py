@@ -46,10 +46,12 @@ class ThreadedClient:
                                                self)
             self.cur_page = 0
         else:
-            new_frame = ImageUploadPageManager(self.master,
-                                               self.input_queue,
-                                               self)
+            new_frame = SecondPageWidgetManager(self.master,
+                                                self,
+                                                self.input_queue,
+                                                self.output_queue)
             self.cur_page = 1
+        self.pred_thread.multi_pred = (self.cur_page == 1)
         self.page = new_frame
         self.page.place(relx=0.5,
                         rely=0.1,

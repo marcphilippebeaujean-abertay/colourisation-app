@@ -10,5 +10,5 @@ class ModelPicker:
 
         dropdown = OptionMenu(master, self.tk_model_dir, *choices)
         dropdown.place(relx=0.5,
-                       rely=0.892,
+                       rely=0.8915,
                        anchor=N)

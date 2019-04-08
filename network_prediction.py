@@ -41,16 +41,24 @@ class PredictionThread(Thread):
         super().__init__()
         self.input_queue = input_queue
         self.output_queue = output_queue
-        self.running = True
+        self.multi_pred = False
+        self.model_dirs = os.listdir(os.path.join(os.getcwd(), 'model_info'))
 
     def run(self):
-        while self.running:
+        while True:
             # check if queue contains a new prediction to make
             if self.input_queue.empty() is False:
                 queue_data = self.input_queue.get()
                 img = queue_data[0]
-                pred = generate_prediction(input_img=img,
-                                           model_name=queue_data[1])
-                self.output_queue.put(pred)
+                if self.multi_pred:
+                    for model_dir in self.model_dirs:
+                        self.__put_pred(model_dir, img)
+                else:
+                    self.__put_pred(queue_data[1], img)
             else:
                 sleep(0.1)
+
+    def __put_pred(self, model_name, input_img):
+        pred = generate_prediction(model_name=model_name,
+                                   input_img=input_img)
+        self.output_queue.put(pred)
