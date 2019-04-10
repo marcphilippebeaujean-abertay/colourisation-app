@@ -87,3 +87,7 @@ ENV/
 # Other
 .idea/
 .DS_Store
+
+# Data files
+model_info/
+test_data/
