@@ -16,6 +16,9 @@ class PageManager(Frame):
     def on_page_switch(self):
         self.is_active = not self.is_active
 
+    def on_prediction_received(self, prediction, chrom):
+        raise RuntimeError('On prediction undefined')
+
 
 class ImageUploadPageManager(PageManager):
     def __init__(self, master, queue, client):
@@ -81,3 +84,6 @@ class ImageUploadPageManager(PageManager):
                 self.error_msg.configure(text='Failed to load Image!')
             return
 
+    def on_prediction_received(self, prediction, chrom):
+        self.output_img.on_output_generated(cv2_to_tk_img(prediction),
+                                            cv2_to_tk_img(chrom))

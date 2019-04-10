@@ -17,7 +17,7 @@ def load_model(model_dir):
     return model
 
 
-def generate_prediction(input_img, model_name='c_ae_model'):
+def generate_prediction(input_img, model_name='c_ae_model', label=None):
     model_path = os.path.join(os.getcwd(), 'model_info', model_name)
     model = load_model(model_path)
     pp_img = np.asarray(prepare_for_prediction(input_img))
@@ -29,7 +29,15 @@ def generate_prediction(input_img, model_name='c_ae_model'):
     # normalise input
     net_input /= 100
     # generate prediction
+    print(model_name)
+    if model_name == 'cont_ae_model':
+        print('making prediction for contextual model')
+        label_reshaped = np.empty((1, len(label)))
+        label_reshaped[0] = label
+        net_input = [net_input, label_reshaped]
     pred = model.predict(net_input)
+    # colour brightness enhancement
+    pred *= 1.05
     # generate chrominance
     output = process_net_output(pred, input_img)
     chrom = generate_chrominance(pred, input_img)
@@ -52,13 +60,18 @@ class PredictionThread(Thread):
                 img = queue_data[0]
                 if self.multi_pred:
                     for model_dir in self.model_dirs:
-                        self.__put_pred(model_dir, img)
+                        if model_dir == 'cont_ae_model':
+                            self.__put_pred(model_dir, img, queue_data[2])
+                        else:
+                            self.__put_pred(model_dir, img)
                 else:
+                    # queue data 1 determines the model if it is predefined
                     self.__put_pred(queue_data[1], img)
             else:
                 sleep(0.1)
 
-    def __put_pred(self, model_name, input_img):
+    def __put_pred(self, model_name, input_img, label=None):
         pred = generate_prediction(model_name=model_name,
-                                   input_img=input_img)
+                                   input_img=input_img,
+                                   label=label)
         self.output_queue.put(pred)
