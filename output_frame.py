@@ -7,6 +7,7 @@ class OutputFrame(ImageFrame):
         super().__init__(master, anchor, init_img_file, frame_dim)
         self.chrominance = None
         self.output = None
+        self.prediction_data = None
         choices = {'Output', 'Chrominance'}
         self.tk_display = StringVar(master)
         self.tk_display.trace('w', self.on_img_updated)
@@ -15,7 +16,6 @@ class OutputFrame(ImageFrame):
         self.dropdown.place(relx=0.5,
                             rely=0.89,
                             anchor=N)
-        self.prediction_data = None
 
     def on_img_updated(self, *kwargs):
         if self.prediction_data is None:

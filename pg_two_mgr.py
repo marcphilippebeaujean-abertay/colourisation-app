@@ -41,17 +41,16 @@ class SecondPageWidgetManager(PageManager):
         self.predictions_pending = 0
 
     def generate_quiz_images(self):
-        print('helloworld')
-        #if self.predictions_pending > 0:
-        #    return
-        #self.output_images = []
-        #img_id = random.randint(0, 99)
-        #print(img_id)
-        #img = self.sample_images[img_id]
-        #label = self.sample_labels[img_id]
-        #img_prepped = prepare_for_prediction(img)
-        #self.predictions_pending = 4
-        #self.input_queue.put((img, '', label))
+        if self.predictions_pending > 0:
+            return
+        self.output_images = []
+        img_id = random.randint(0, 99)
+        print(img_id)
+        img = self.sample_images[img_id]
+        label = self.sample_labels[img_id]
+        img_prepped = prepare_for_prediction(img)
+        self.predictions_pending = 4
+        self.input_queue.put((img, '', label))
 
     def on_prediction_received(self, prediction):
         # check if predictions are pending
