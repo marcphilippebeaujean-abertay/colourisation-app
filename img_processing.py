@@ -78,7 +78,7 @@ def process_net_output(net_output, original_image):
     height, width = original_image.shape[:2]
     final_output = cv2.resize(final_output, (width, height))
     final_output = add_alpha(final_output, original_image)
-    return final_output
+    return cv2_to_tk_img(np.uint8(final_output))
 
 
 def cv2_to_tk_img(img):
@@ -96,4 +96,4 @@ def generate_chrominance(ab, input_img):
     out_img *= 255
     out_img = cv2.resize(out_img, (input_img.shape[1], input_img.shape[0]))
     out_img = add_alpha(out_img, input_img)
-    return out_img
+    return cv2_to_tk_img(np.uint8(out_img))

@@ -1,12 +1,12 @@
 from tkinter import *
 from window_def import Window
-from threaded_client import ThreadedClient
+from io_manager import IOManager
 
 # define window
 root = Tk()
 root.resizable(False, False)
 root.geometry('800x400')
 window = Window(root)
-client = ThreadedClient(root)
+client = IOManager(root)
 # run application
 root.mainloop()

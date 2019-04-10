@@ -1,11 +1,11 @@
-from first_page import ImageUploadPageManager
-from second_page import SecondPageWidgetManager
+from pg_one_mgr import ImageUploadPageManager
+from pg_two_mgr import SecondPageWidgetManager
 from queue import Queue
-from network_prediction import PredictionThread
+from prediction_thread import PredictionThread
 from tkinter import *
 
 
-class ThreadedClient:
+class IOManager:
     def __init__(self, master):
         # root tkinter UI
         self.master = master
@@ -30,8 +30,8 @@ class ThreadedClient:
 
     def periodic_call(self):
         if self.output_queue.empty() is False:
-            prediction, chrom = self.output_queue.get()
-            self.page.on_prediction_received(prediction, chrom)
+            prediction = self.output_queue.get()
+            self.page.on_prediction_received(prediction)
         self.master.after(200, self.periodic_call)
 
     def end_application(self):

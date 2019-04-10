@@ -1,6 +1,7 @@
 from keras.models import model_from_json
 from img_processing import prepare_for_prediction, process_net_output, generate_chrominance
 from threading import Thread
+from prediction_data import PredictionData
 from time import sleep
 import os
 import numpy as np
@@ -26,20 +27,19 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     net_input = np.empty((1, img_rows, img_cols, 1))
     # assign luminance channel of image as input
     net_input[0] = pp_img[..., :1]
-    # normalise input
+    # normalise channels
     net_input /= 100
+    pp_img[..., 1:] += 128
+    pp_img[..., 1:] /= 256
     # generate prediction
     if model_name == 'cont_ae_model':
         label_reshaped = np.empty((1, len(label)))
         label_reshaped[0] = label
         net_input = [net_input, label_reshaped]
     pred = model.predict(net_input)
-    # colour brightness enhancement
-    pred *= 1.05
-    # generate chrominance
-    output = process_net_output(pred, input_img)
-    chrom = generate_chrominance(pred, input_img)
-    return output, chrom
+    ground_truth = None if pp_img.shape[2] < 2 else pp_img[..., 1:]
+    final_pred = PredictionData(input_img, pred, ground_truth)
+    return final_pred
 
 
 class PredictionThread(Thread):

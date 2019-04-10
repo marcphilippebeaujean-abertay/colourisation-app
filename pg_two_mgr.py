@@ -1,5 +1,5 @@
 from tkinter import *
-from first_page import PageManager
+from pg_one_mgr import PageManager
 from img_processing import prepare_for_prediction, cv2_to_tk_img
 import random
 import cv2
@@ -48,7 +48,7 @@ class SecondPageWidgetManager(PageManager):
         if self.predictions_pending > 0:
             return
         self.output_images = []
-        img_id = random.randint(0, self.sample_images.shape[0])
+        img_id = random.randint(0, 99)
         print(img_id)
         img = self.sample_images[img_id]
         label = self.sample_labels[img_id]
@@ -56,7 +56,7 @@ class SecondPageWidgetManager(PageManager):
         self.predictions_pending = 4
         self.input_queue.put((img, '', label))
 
-    def on_prediction_received(self, prediction, chrom):
+    def on_prediction_received(self, prediction):
         # check if predictions are pending
         if self.predictions_pending > 0:
             resize_img = cv2.resize(prediction, (90, 90))

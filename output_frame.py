@@ -26,8 +26,7 @@ class OutputFrame(ImageFrame):
                 return
             self.update_img(self.chrominance)
 
-    def on_output_generated(self, output_data, chrom):
-        self.output = output_data
-        self.chrominance = chrom
+    def on_output_generated(self, prediction_data):
+        self.output, self.chrominance = prediction_data.generate_output()
         self.on_img_updated()
 

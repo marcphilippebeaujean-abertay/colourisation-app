@@ -84,6 +84,5 @@ class ImageUploadPageManager(PageManager):
                 self.error_msg.configure(text='Failed to load Image!')
             return
 
-    def on_prediction_received(self, prediction, chrom):
-        self.output_img.on_output_generated(cv2_to_tk_img(prediction),
-                                            cv2_to_tk_img(chrom))
+    def on_prediction_received(self, prediction_data):
+        self.output_img.on_output_generated(prediction_data)
