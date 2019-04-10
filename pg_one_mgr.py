@@ -55,10 +55,7 @@ class ImageUploadPageManager(PageManager):
                           rely=0.83,
                           anchor=N)
         self.model_toggle = ModelPicker(self.source_img.canvas)
-        self.toggle_b = Button(self, text="Toggle Page", command=self.client.switch_page)
-        self.toggle_b.place(relx=0.5,
-                            rely=0.5,
-                            anchor=N)
+
 
     def load_img(self):
         img_path = askopenfilename(initialdir=os.getcwd(),

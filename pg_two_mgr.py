@@ -32,10 +32,6 @@ class SecondPageWidgetManager(PageManager):
             label.place(relx=0.5, rely=0.05, anchor=N)
             self.output_labels.append(label)
             self.output_canvas.append(canvas)
-        self.toggle_b = Button(self, text="Toggle Page", command=self.secure_page_toggle)
-        self.toggle_b.place(relx=0.5,
-                            rely=0.5,
-                            anchor=N)
         self.init_btn = Button(self, text="New Image Set", command=self.generate_quiz_images)
         self.init_btn.place(relx=0.5,
                             rely=0.0,
@@ -45,16 +41,17 @@ class SecondPageWidgetManager(PageManager):
         self.predictions_pending = 0
 
     def generate_quiz_images(self):
-        if self.predictions_pending > 0:
-            return
-        self.output_images = []
-        img_id = random.randint(0, 99)
-        print(img_id)
-        img = self.sample_images[img_id]
-        label = self.sample_labels[img_id]
-        img_prepped = prepare_for_prediction(img)
-        self.predictions_pending = 4
-        self.input_queue.put((img, '', label))
+        print('helloworld')
+        #if self.predictions_pending > 0:
+        #    return
+        #self.output_images = []
+        #img_id = random.randint(0, 99)
+        #print(img_id)
+        #img = self.sample_images[img_id]
+        #label = self.sample_labels[img_id]
+        #img_prepped = prepare_for_prediction(img)
+        #self.predictions_pending = 4
+        #self.input_queue.put((img, '', label))
 
     def on_prediction_received(self, prediction):
         # check if predictions are pending
@@ -72,9 +69,5 @@ class SecondPageWidgetManager(PageManager):
             self.output_labels[i].configure(image='')
             self.output_labels[i].configure(image=img)
 
-    def secure_page_toggle(self):
-        # only switch when predictions are not pending
-        if self.predictions_pending == 0:
-            self.client.switch_page()
 
 

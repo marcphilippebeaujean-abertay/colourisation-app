@@ -15,8 +15,11 @@ class OutputFrame(ImageFrame):
         self.dropdown.place(relx=0.5,
                             rely=0.89,
                             anchor=N)
+        self.prediction_data = None
 
     def on_img_updated(self, *kwargs):
+        if self.prediction_data is None:
+            return
         if self.tk_display.get() == 'Output':
             if self.output is None:
                 return
@@ -27,6 +30,10 @@ class OutputFrame(ImageFrame):
             self.update_img(self.chrominance)
 
     def on_output_generated(self, prediction_data):
-        self.output, self.chrominance = prediction_data.generate_output()
+        self.prediction_data = prediction_data
+        self.refresh_image_data()
+
+    def refresh_image_data(self):
+        self.output, self.chrominance = self.prediction_data.generate_output()
         self.on_img_updated()
 
