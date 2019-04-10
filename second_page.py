@@ -14,8 +14,9 @@ class SecondPageWidgetManager(PageManager):
         self.output_canvas = []
         self.output_labels = []
         frame_dim = 100
-        self.sample_images = np.load(open('image_arr.npy', 'rb'))
-        self.sample_labels = np.load(open('labels.npy', 'rb'))
+        test_data_path = os.path.join(os.getcwd(), 'test_data')
+        self.sample_images = np.load(open(f'{test_data_path}/image_arr.npy', 'rb'))
+        self.sample_labels = np.load(open(f'{test_data_path}/labels.npy', 'rb'))
         for i in range(6):
             canvas = Canvas(self,
                             relief='solid',
@@ -30,6 +31,7 @@ class SecondPageWidgetManager(PageManager):
             label = Label(master=canvas)
             label.place(relx=0.5, rely=0.05, anchor=N)
             self.output_labels.append(label)
+            self.output_canvas.append(canvas)
         self.toggle_b = Button(self, text="Toggle Page", command=self.secure_page_toggle)
         self.toggle_b.place(relx=0.5,
                             rely=0.5,
@@ -46,7 +48,8 @@ class SecondPageWidgetManager(PageManager):
         if self.predictions_pending > 0:
             return
         self.output_images = []
-        img_id = random.randint(0, 100)
+        img_id = random.randint(0, self.sample_images.shape[0])
+        print(img_id)
         img = self.sample_images[img_id]
         label = self.sample_labels[img_id]
         img_prepped = prepare_for_prediction(img)
@@ -56,7 +59,7 @@ class SecondPageWidgetManager(PageManager):
     def on_prediction_received(self, prediction, chrom):
         # check if predictions are pending
         if self.predictions_pending > 0:
-            resize_img = cv2.resize(self.sample_images[0], (90, 90))
+            resize_img = cv2.resize(prediction, (90, 90))
             photo_img = cv2_to_tk_img(resize_img)
             self.output_images.append(photo_img)
             self.predictions_pending -= 1
@@ -64,7 +67,10 @@ class SecondPageWidgetManager(PageManager):
                 self.show_images()
 
     def show_images(self):
-        print('showing prediction images!')
+        print(len(self.output_images))
+        for i, img in enumerate(self.output_images):
+            self.output_labels[i].configure(image='')
+            self.output_labels[i].configure(image=img)
 
     def secure_page_toggle(self):
         # only switch when predictions are not pending

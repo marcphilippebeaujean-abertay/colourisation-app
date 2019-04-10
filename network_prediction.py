@@ -29,9 +29,7 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     # normalise input
     net_input /= 100
     # generate prediction
-    print(model_name)
     if model_name == 'cont_ae_model':
-        print('making prediction for contextual model')
         label_reshaped = np.empty((1, len(label)))
         label_reshaped[0] = label
         net_input = [net_input, label_reshaped]
