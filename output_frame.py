@@ -34,6 +34,7 @@ class OutputFrame(ImageFrame):
         else:
             for txt in self.stats_txt:
                 txt.place_forget()
+            self.stats_txt.clear()
 
     def on_output_generated(self, prediction_data):
         self.prediction_data = prediction_data
@@ -90,6 +91,11 @@ class OutputFrame(ImageFrame):
                         rely=row_pos,
                         anchor=N)
             self.stats_txt.append(val_b)
+
+    def init_animation(self, anim):
+        for txt in self.stats_txt:
+            txt.place_forget()
+        super(OutputFrame, self).init_animation(anim)
 
 
 
