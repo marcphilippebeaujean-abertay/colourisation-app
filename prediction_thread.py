@@ -13,7 +13,7 @@ true_model_names = {
     'c_ae_model': 'Convolutional AE',
     'cont_ae_model': 'Contextual AE',
     'dil_ae_model': 'Dilated AE',
-    'lat_ae_model': 'Latent Vector AE'
+    'lat_ae_model': 'Latent Vec. AE'
 }
 
 
@@ -50,7 +50,6 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     ground_truth = None if pp_img.shape[2] < 2 else pp_img[..., 1:]
     final_pred = PredictionData(input_img,
                                 pred,
-                                ground_truth,
                                 true_model_names[model_name])
     return final_pred
 

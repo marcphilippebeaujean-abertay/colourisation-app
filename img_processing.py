@@ -70,6 +70,10 @@ def process_net_output(net_output, original_image, target_size=None):
         final_out_res = original_image.shape[:2][::-1]
     final_output = cv2.resize(final_output,
                               final_out_res)
+    if final_output.shape != original_image.shape:
+        if target_size != None:
+            original_image = cv2.resize(original_image,
+                                        target_size)
     fin_output_lab = rgb2lab(original_image[..., :3])
     # use luminance from original image
     final_output[..., :1] = fin_output_lab[..., :1]

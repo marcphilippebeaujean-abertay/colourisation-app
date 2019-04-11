@@ -87,5 +87,3 @@ class IOManager:
     def notification_update(self, text, is_error=False):
         color = 'red' if is_error else 'green'
         self.notification_label.configure(fg=color, text=text)
-
-
