@@ -6,6 +6,7 @@ class PredictionData:
     def __init__(self, input_img, ab_channels, model_name='', ground_truth=None):
         self.ab_channels = ab_channels
         self.input_img = input_img
+        self.model_name = model_name
         self.channel_dist = None
         self.mse = None
         self.multi_factor = 1.05
@@ -22,13 +23,13 @@ class PredictionData:
 
     def generate_stats(self):
         dict = {
-            'mean': (np.mean(self.ab_channels[..., :1]),
+            'Mean': (np.mean(self.ab_channels[..., :1]),
                      np.mean(self.ab_channels[..., 1:])),
-            'max': (np.amax(self.ab_channels[..., :1]),
+            'Max': (np.amax(self.ab_channels[..., :1]),
                     np.amax(self.ab_channels[..., 1:])),
-            'min': (np.amax(self.ab_channels[..., :1]),
+            'Min': (np.amax(self.ab_channels[..., :1]),
                     np.amin(self.ab_channels[..., 1:])),
-            'stdev': (np.std(self.ab_channels[..., :1]),
+            'Std. Dev.': (np.std(self.ab_channels[..., :1]),
                       np.std(self.ab_channels[..., 1:]))
             }
         return dict
