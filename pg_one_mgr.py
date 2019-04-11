@@ -12,6 +12,7 @@ class PageManager(Frame):
         Frame.__init__(self, master, width=600, height=300)
         self.is_active = is_active
         self.client = client
+        self.is_pred_pending = False
 
     def on_page_switch(self):
         self.is_active = not self.is_active
@@ -37,14 +38,6 @@ class ImageUploadPageManager(PageManager):
                                                    'images',
                                                    'icons',
                                                    'eye_logo.png'))
-        # initialise label members
-        self.error_msg = Label(self,
-                               text='',
-                               fg='red',
-                               font=('Helvetica', 20))
-        self.error_msg.place(anchor=N,
-                             relx=0.5,
-                             rely=0.9)
         # reference to threading queue
         self.input_queue = queue
         # add button for configuring images
@@ -52,7 +45,7 @@ class ImageUploadPageManager(PageManager):
                              text='Choose File',
                              command=lambda: self.load_img())
         choose_file.place(relx=0.5,
-                          rely=0.83,
+                          rely=0.82,
                           anchor=N)
         self.model_toggle = ModelPicker(self.source_img.canvas)
 
@@ -74,12 +67,13 @@ class ImageUploadPageManager(PageManager):
                                       self.model_toggle.tk_model_dir.get()))
                 # apply widget updates
                 self.source_img.update_img(cv2_to_tk_img(img_source))
-                self.error_msg.configure(text='')
+                self.client.notification_update('')
                 # create animation
                 self.output_img.init_animation(self.output_img.loading_anim().__next__)
             except:
-                self.error_msg.configure(text='Failed to load Image!')
+                self.client.notification_update('Failed to load Image!', True)
             return
 
     def on_prediction_received(self, prediction_data):
         self.output_img.on_output_generated(prediction_data)
+        self.is_pred_pending = False

@@ -49,6 +49,7 @@ class SecondPageWidgetManager(PageManager):
         img = self.sample_images[img_id]
         label = self.sample_labels[img_id]
         img_prepped = prepare_for_prediction(img)
+        self.is_pred_pending = True
         self.predictions_pending = 4
         self.input_queue.put((img, '', label))
 
@@ -61,6 +62,7 @@ class SecondPageWidgetManager(PageManager):
             self.predictions_pending -= 1
             if self.predictions_pending is 0:
                 self.show_images()
+                self.is_pred_pending = False
 
     def show_images(self):
         print(len(self.output_images))

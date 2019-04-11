@@ -1,7 +1,7 @@
 from image_frame import ImageFrame
 from tkinter import *
 
-dropdown_choices = {'Output', 'Chrominance', 'Stats', 'Activations'}
+dropdown_choices = {'Output', 'Chrominance', 'Stats'}
 
 
 class OutputFrame(ImageFrame):
@@ -96,7 +96,4 @@ class OutputFrame(ImageFrame):
         for txt in self.stats_txt:
             txt.place_forget()
         super(OutputFrame, self).init_animation(anim)
-
-
-
 

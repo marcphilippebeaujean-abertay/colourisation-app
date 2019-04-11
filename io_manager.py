@@ -12,6 +12,14 @@ class IOManager:
         # queue used to manage threading messages
         self.input_queue = Queue()
         self.output_queue = Queue()
+        # initialise label members
+        self.notification_label = Label(master,
+                                        text='',
+                                        fg='green',
+                                        font=('Helvetica', 20))
+        self.notification_label.place(anchor=N,
+                             relx=0.5,
+                             rely=0.9)
         # setup widget manager
         self.page = ImageUploadPageManager(self.master,
                                            self.input_queue,
@@ -38,6 +46,9 @@ class IOManager:
         self.pred_thread.running = False
 
     def switch_page(self):
+        if self.cur_page.is_pred_pending:
+            return
+        self.notification_label.configure(text='')
         self.page.destroy()
         new_frame = None
         if self.cur_page is 1:
@@ -56,5 +67,9 @@ class IOManager:
         self.page.place(relx=0.5,
                         rely=0.1,
                         anchor=N)
+
+    def notification_update(self, text, is_error=False):
+        color = 'red' if is_error else 'green'
+        self.notification_label.configure(fg=color, text=text)
 
 
