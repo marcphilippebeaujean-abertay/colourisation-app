@@ -25,11 +25,18 @@ class ImageFrame:
         # configure animation variables
         self.is_loading = False
         self.anim_generator = None
+        self.blank_img = PhotoImage(file=os.path.join(os.getcwd(),
+                                        'images',
+                                        'icons',
+                                        'blank.png'))
 
     def update_img(self, img_file):
         self.is_loading = False
         self.img = img_file
-        self.img_label.configure(image=img_file)
+        if img_file is None:
+            self.img_label.configure(image=self.blank_img)
+        else:
+            self.img_label.configure(image=img_file)
 
     def init_animation(self, anim):
         self.anim_generator = anim

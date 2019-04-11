@@ -3,7 +3,7 @@ from img_processing import process_net_output, generate_chrominance, cv2_to_tk_i
 
 
 class PredictionData:
-    def __init__(self, input_img, ab_channels, ground_truth=None):
+    def __init__(self, input_img, ab_channels, model_name='', ground_truth=None):
         self.ab_channels = ab_channels
         self.input_img = input_img
         self.channel_dist = None
