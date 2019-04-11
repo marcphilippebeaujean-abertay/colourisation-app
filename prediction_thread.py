@@ -6,6 +6,16 @@ from time import sleep
 import os
 import numpy as np
 
+# used to identify and store real model names to be displayed,
+# based on name of model folder that is used by thread to load
+# in the model for predictions
+true_model_names = {
+    'c_ae_model': 'Convolutional AE',
+    'cont_ae_model': 'Contextual AE',
+    'dil_ae_model': 'Dilated AE',
+    'lat_ae_model': 'Latent Vector AE'
+}
+
 
 def load_model(model_dir):
     model = None
@@ -38,7 +48,10 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
         net_input = [net_input, label_reshaped]
     pred = model.predict(net_input)
     ground_truth = None if pp_img.shape[2] < 2 else pp_img[..., 1:]
-    final_pred = PredictionData(input_img, pred, ground_truth)
+    final_pred = PredictionData(input_img,
+                                pred,
+                                ground_truth,
+                                true_model_names[model_name])
     return final_pred
 
 

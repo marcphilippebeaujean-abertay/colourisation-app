@@ -56,7 +56,8 @@ class SecondPageWidgetManager(PageManager):
     def on_prediction_received(self, prediction):
         # check if predictions are pending
         if self.predictions_pending > 0:
-            resize_img = cv2.resize(prediction, (90, 90))
+            image, _ = prediction.generate_output()
+            resize_img = cv2.resize(image, (90, 90))
             photo_img = cv2_to_tk_img(resize_img)
             self.output_images.append(photo_img)
             self.predictions_pending -= 1

@@ -10,8 +10,6 @@ class PredictionData:
         self.channel_dist = None
         self.mse = None
         self.multi_factor = 1.05
-        if ground_truth is not None:
-            self.mse = np.square(np.subtract(self.ab_channels, ground_truth)).mean()
         self.stats = self.generate_stats()
 
     def update_brightness(self, decrement):
@@ -34,10 +32,12 @@ class PredictionData:
             }
         return dict
 
-    def generate_output(self):
+    def generate_output(self, target_res=None):
         # colour brightness enhancement
         mod_pred = self.ab_channels * self.multi_factor
         # generate chrominance
-        output = process_net_output(mod_pred, self.input_img)
+        target_res = None
+        add_alpha = False
+        output = process_net_output(mod_pred, self.input_img, target_res)
         chrom = generate_chrominance(mod_pred, self.input_img)
         return output, chrom

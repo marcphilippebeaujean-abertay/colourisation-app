@@ -54,7 +54,7 @@ def denormalize_channel(min_val, max_val, channel_val):
     channel_val -= min_val
 
 
-def process_net_output(net_output, original_image):
+def process_net_output(net_output, original_image, target_size=None):
     # initialise array
     img_shape = (net_output.shape[1], net_output.shape[2], 3)
     final_output = np.zeros(img_shape)
@@ -65,9 +65,11 @@ def process_net_output(net_output, original_image):
     denormalize_channel(128, 127, final_output[..., 1:2])
     denormalize_channel(127, 128, final_output[..., 2:])
     # scale up chrominance output from network to original size
+    final_out_res = target_size
+    if target_size is None:
+        final_out_res = original_image.shape[:2][::-1]
     final_output = cv2.resize(final_output,
-                              (original_image.shape[1],
-                               original_image.shape[0]))
+                              final_out_res)
     fin_output_lab = rgb2lab(original_image[..., :3])
     # use luminance from original image
     final_output[..., :1] = fin_output_lab[..., :1]
@@ -75,9 +77,8 @@ def process_net_output(net_output, original_image):
     # denormalize rgb output (will be in range 0 - 1)
     final_output *= 255
     # apply alpha channel if necessary
-    height, width = original_image.shape[:2]
-    final_output = cv2.resize(final_output, (width, height))
-    final_output = add_alpha(final_output, original_image)
+    if target_size is None:
+        final_output = add_alpha(final_output, original_image)
     return cv2_to_tk_img(np.uint8(final_output))
 
 
