@@ -41,6 +41,8 @@ class SecondPageWidgetManager(PageManager):
         self.is_pred_pending = True
         self.predictions_pending = 4
         self.input_queue.put((img, '', label))
+        for pred_disp in self.output_displays:
+            pred_disp.init_animation(pred_disp.loading_anim().__next__)
 
     def on_prediction_received(self, prediction):
         # check if predictions are pending

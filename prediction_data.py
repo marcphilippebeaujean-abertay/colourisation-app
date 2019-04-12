@@ -3,13 +3,13 @@ from img_processing import process_net_output, generate_chrominance
 
 
 class PredictionData:
-    def __init__(self, input_img, ab_channels, model_name=''):
+    def __init__(self, input_img, ab_channels, multi_fact, model_name=''):
         self.ab_channels = ab_channels
         self.input_img = input_img
         self.model_name = model_name
         self.channel_dist = None
         self.mse = None
-        self.multi_factor = 1.00
+        self.multi_factor = multi_fact
         self.stats = self.generate_stats()
 
     def update_brightness(self, decrement):

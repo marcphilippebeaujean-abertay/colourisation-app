@@ -48,7 +48,7 @@ class OutputFrame(ImageFrame):
         self.stats_txt = []
         header = Text(self.canvas, height=1, width=20)
         header.insert('1.0', 'Output Statistics')
-        header.place(relx=0.54, rely=0.1, anchor=N)
+        header.place(relx=0.6, rely=0.1, anchor=N)
         header.tag_config(tagName='Header', justify=CENTER)
         self.stats_txt.append(header)
 
@@ -91,6 +91,9 @@ class OutputFrame(ImageFrame):
                         rely=row_pos,
                         anchor=N)
             self.stats_txt.append(val_b)
+        for txt in self.stats_txt:
+            txt.configure(font=('helvetica', 12))
+        header.configure(font=('helvetica', 16, 'bold'))
 
     def init_animation(self, anim):
         for txt in self.stats_txt:

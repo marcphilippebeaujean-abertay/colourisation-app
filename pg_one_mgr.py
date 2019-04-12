@@ -49,7 +49,6 @@ class ImageUploadPageManager(PageManager):
                           anchor=N)
         self.model_toggle = ModelPicker(self.source_img.canvas)
 
-
     def load_img(self):
         img_path = askopenfilename(initialdir=os.getcwd(),
                                    filetypes=(("PNG File", "*.png"),

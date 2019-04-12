@@ -19,9 +19,7 @@ class IOManager:
                                         text='',
                                         fg='green',
                                         font=('Helvetica', 20))
-        self.notification_label.place(anchor=N,
-                                      relx=0.5,
-                                      rely=0.9)
+        self.notification_label.place(anchor=N, relx=0.5, rely=0.9)
         # setup widget manager
         self.page = ImageUploadPageManager(self.master,
                                            self.input_queue,
@@ -38,13 +36,9 @@ class IOManager:
         # create periodic call that checks for predictions
         self.periodic_call()
         # toggle button used to switch between pages
-        toggle_a = ToggleButton(master,
-                                client=self,
-                                active=True)
+        toggle_a = ToggleButton(master, client=self, active=True)
         toggle_a.place(relx=0.45, rely=0.02, anchor=N)
-        toggle_b = ToggleButton(master,
-                                client=self,
-                                active=False)
+        toggle_b = ToggleButton(master, client=self, active=False)
         toggle_b.place(relx=0.55, rely=0.02, anchor=N)
         self.toggle_btns = [toggle_a, toggle_b]
 
@@ -80,9 +74,7 @@ class IOManager:
             self.cur_page = 1
         self.pred_thread.multi_pred = (self.cur_page == 1)
         self.page = new_frame
-        self.page.place(relx=0.5,
-                        rely=0.1,
-                        anchor=N)
+        self.page.place(relx=0.5, rely=0.1, anchor=N)
 
     def notification_update(self, text, is_error=False):
         color = 'red' if is_error else 'green'

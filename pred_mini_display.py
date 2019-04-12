@@ -1,6 +1,10 @@
 from tkinter import *
 from img_processing import cv2_to_tk_img
+from PIL import ImageTk, Image
+import os
 import cv2
+
+image_dims = (50, 50)
 
 
 class MiniPredDisplay(Frame):
@@ -16,9 +20,7 @@ class MiniPredDisplay(Frame):
                              bd=2,
                              width=frame_dim,
                              height=frame_dim)
-        self.canvas.place(anchor=N,
-                          relx=position[0],
-                          rely=position[1])
+        self.canvas.place(anchor=N, relx=position[0], rely=position[1])
         self.img_label = Label(master=self.canvas)
         self.img_label.place(relx=0.5, rely=0.25, anchor=N)
         self.img_label.configure(image=self.image)
@@ -31,12 +33,14 @@ class MiniPredDisplay(Frame):
                           command=self.on_selected)
         self.btn.place_forget()
         self.model_name = ''
+        self.is_loading = False
+        self.anim_generator = None
 
     def update_from_pred(self, pred, is_ground_truth=False):
+        self.is_loading = False
         self.is_ground_truth = is_ground_truth
         if is_ground_truth:
-            pred = cv2.resize(pred,
-                              (50, 50))
+            pred = cv2.resize(pred, image_dims)
             self.image = cv2_to_tk_img(pred)
             self.model_name = 'Ground Truth'
         else:
@@ -68,4 +72,35 @@ class MiniPredDisplay(Frame):
     def on_revealed(self):
         self.reveal_text.configure(text=self.model_name)
 
+    def update_img(self, img_file):
+        self.is_loading = False
+        self.image = img_file
+        if img_file is None:
+            self.img_label.configure(image=self.blank_img)
+        else:
+            self.img_label.configure(image=img_file)
+
+    def init_animation(self, anim):
+        self.anim_generator = anim
+        self.master.after_idle(self.anim_generator)
+
+    def loading_anim(self):
+        self.is_loading = True
+        angle = 0
+        loading_img = Image.open(os.path.join(os.getcwd(),
+                                              'images',
+                                              'icons',
+                                              'loading_img.png'))
+        loading_img = loading_img.resize(image_dims, Image.ANTIALIAS)
+        while True:
+            try:
+                if self.is_loading:
+                    self.master.after_idle(self.anim_generator)
+                    self.image = ImageTk.PhotoImage(loading_img.rotate(angle))
+                    self.img_label.configure(image=self.image)
+                yield
+                angle -= 1
+                angle %= 360
+            except StopIteration as e:
+                break
 
