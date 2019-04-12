@@ -26,9 +26,9 @@ class ImageFrame:
         self.is_loading = False
         self.anim_generator = None
         self.blank_img = PhotoImage(file=os.path.join(os.getcwd(),
-                                        'images',
-                                        'icons',
-                                        'blank.png'))
+                                                      'images',
+                                                      'icons',
+                                                      'blank.png'))
 
     def update_img(self, img_file):
         self.is_loading = False

@@ -83,7 +83,7 @@ class SecondPageWidgetManager(PageManager):
         random_img = self.sample_images[rand_ab_id]
         rand_img_lab = rgb2lab(random_img)
         rand_img_ab = rand_img_lab[..., 1:]
-        rand_img_ab += 128
+        rand_img_ab += 129
         rand_img_ab /= 256
         resize_arr = np.empty((1,)+rand_img_ab.shape)
         resize_arr[0] = rand_img_ab
@@ -92,3 +92,4 @@ class SecondPageWidgetManager(PageManager):
                               1.0,
                               'Base Case')
         return pred
+

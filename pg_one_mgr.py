@@ -13,6 +13,7 @@ class PageManager(Frame):
         self.is_active = is_active
         self.client = client
         self.is_pred_pending = False
+        self.pred_data = None
 
     def on_page_switch(self):
         self.is_active = not self.is_active
@@ -76,3 +77,11 @@ class ImageUploadPageManager(PageManager):
     def on_prediction_received(self, prediction_data):
         self.output_img.on_output_generated(prediction_data)
         self.is_pred_pending = False
+        self.pred_data = prediction_data
+
+    def update_brightness(self, incrementing):
+        if incrementing:
+            self.pred_data.multi_factor += 0.05
+        else:
+            self.pred_data.multi_factor -= 0.05
+        self.output_img.on_output_generated(prediction_data=self.pred_data)
