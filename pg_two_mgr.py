@@ -1,6 +1,8 @@
 from tkinter import *
 from pg_one_mgr import PageManager
 from pred_mini_display import MiniPredDisplay
+from prediction_data import PredictionData
+from skimage.color import rgb2lab
 import random
 import os
 import numpy as np
@@ -50,10 +52,11 @@ class SecondPageWidgetManager(PageManager):
             self.output_preds.append(prediction)
             self.predictions_pending -= 1
             if self.predictions_pending is 0:
-                self.show_images()
                 self.is_pred_pending = False
+                self.show_images()
 
     def show_images(self):
+        self.output_preds.append(self.generate_base_case())
         random.shuffle(self.output_preds)
         for i, pred in enumerate(self.output_preds):
             if pred is None:
@@ -72,4 +75,20 @@ class SecondPageWidgetManager(PageManager):
                     pred_disp.highlight_selection()
         self.output_displays[self.ground_truth_id].highlight_selection()
 
-
+    def generate_base_case(self):
+        ground_truth = self.sample_images[self.rand_sample_id]
+        rand_ab_id = random.randint(0, 99)
+        while rand_ab_id == self.rand_sample_id:
+            rand_ab_id = random.randint(0, 99)
+        random_img = self.sample_images[rand_ab_id]
+        rand_img_lab = rgb2lab(random_img)
+        rand_img_ab = rand_img_lab[..., 1:]
+        rand_img_ab += 128
+        rand_img_ab /= 256
+        resize_arr = np.empty((1,)+rand_img_ab.shape)
+        resize_arr[0] = rand_img_ab
+        pred = PredictionData(ground_truth,
+                              resize_arr,
+                              1.0,
+                              'Base Case')
+        return pred

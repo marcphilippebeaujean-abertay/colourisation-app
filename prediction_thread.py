@@ -39,8 +39,6 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     net_input[0] = pp_img[..., :1]
     # normalise channels
     net_input /= 100
-    pp_img[..., 1:] += 128
-    pp_img[..., 1:] /= 256
     # generate prediction
     if model_name == 'cont_ae_model':
         label_reshaped = np.empty((1, len(label)))
