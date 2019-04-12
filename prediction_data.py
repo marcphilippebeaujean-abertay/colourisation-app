@@ -9,7 +9,7 @@ class PredictionData:
         self.model_name = model_name
         self.channel_dist = None
         self.mse = None
-        self.multi_factor = 1.05
+        self.multi_factor = 1.00
         self.stats = self.generate_stats()
 
     def update_brightness(self, decrement):

@@ -8,8 +8,8 @@ import os
 
 
 class PageManager(Frame):
-    def __init__(self, master, is_active, client):
-        Frame.__init__(self, master, width=600, height=300)
+    def __init__(self, master, is_active, client, width=600, height=400):
+        Frame.__init__(self, master, width=width, height=height)
         self.is_active = is_active
         self.client = client
         self.is_pred_pending = False
