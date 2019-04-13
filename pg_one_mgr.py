@@ -3,8 +3,6 @@ from tkinter.filedialog import askopenfilename
 from img_processing import load_to_canvas, cv2_to_tk_img
 from image_frame import ImageFrame
 from output_frame import OutputFrame
-from model_picker import ModelPicker
-import numpy as np
 import os
 
 
@@ -49,23 +47,38 @@ class ImageUploadPageManager(PageManager):
         choose_file.place(relx=0.5,
                           rely=0.82,
                           anchor=N)
-        self.model_toggle = ModelPicker(self.source_img.canvas)
+        self.tk_model_dir = StringVar(master)
+        choices = {'c_ae_model', 'dil_ae_model', 'lat_ae_model'}
+        self.tk_model_dir.set('c_ae_model')
+        self.tk_model_dir.trace('w', self.on_new_model_selected)
+
+        self.model_toggle = OptionMenu(self.source_img.canvas, self.tk_model_dir, *choices)
+        self.model_toggle.place(relx=0.5,
+                                rely=0.8915,
+                                anchor=N)
+        self.cur_img_path = ''
 
     def load_img(self):
-        img_path = askopenfilename(initialdir=os.getcwd(),
+        self.cur_img_path = askopenfilename(initialdir=os.getcwd(),
                                    filetypes=(("PNG File", "*.png"),
                                               ("All Files", "*.*")),
                                    title='Choose an Image')
-        if len(img_path) is 0:
+        self.add_img_to_queue()
+
+    def on_new_model_selected(self, *kwargs):
+        self.add_img_to_queue()
+
+    def add_img_to_queue(self):
+        if len(self.cur_img_path) is 0:
             return
-        if os.path.isfile(img_path):
+        if os.path.isfile(self.cur_img_path):
             try:
                 # adjust image to fit to canvas
-                img_source = load_to_canvas(img_path,
+                img_source = load_to_canvas(self.cur_img_path,
                                             (self.source_img.frame_dim-5))
                 # add image to the queue
                 self.input_queue.put((img_source,
-                                      self.model_toggle.tk_model_dir.get()))
+                                      self.tk_model_dir.get()))
                 # apply widget updates
                 self.source_img.update_img(cv2_to_tk_img(img_source))
                 self.client.notification_update('')
@@ -75,6 +88,7 @@ class ImageUploadPageManager(PageManager):
                 self.client.notification_update('Failed to load Image!', True)
             return
 
+
     def on_prediction_received(self, prediction_data):
         self.output_img.on_output_generated(prediction_data)
         self.is_pred_pending = False
@@ -82,10 +96,4 @@ class ImageUploadPageManager(PageManager):
 
     def update_brightness(self, incrementing):
         self.pred_data.update_brightness(incrementing)
-        if np.amax(self.pred_data.get_multiplied_channels()) > 1.0:
-            self.pred_data.update_brightness(False)
-            return
-        if np.amax(self.pred_data.get_multiplied_channels()) < 0.0:
-            self.pred_data.update_brightness(True)
-            return
         self.output_img.on_output_generated(prediction_data=self.pred_data)
