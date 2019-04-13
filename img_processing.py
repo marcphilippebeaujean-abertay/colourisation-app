@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from skimage.color import lab2rgb, rgb2lab
+from skimage.color import rgb2lab
 from PIL import ImageTk, Image
 
 
@@ -99,12 +99,13 @@ def cv2_to_tk_img(img):
 
 
 def generate_chrominance(ab, input_img):
-    out_img = np.ones((ab.shape[1], ab.shape[2], 3))
+    out_img = np.ones((ab.shape[1], ab.shape[2], 3), dtype=np.float32)
     denormalize_channel(128, 127, ab[..., :1])
     denormalize_channel(127, 128, ab[..., 1:])
     out_img[..., :1] *= 50
     out_img[..., 1:] = ab
-    out_img = lab2rgb(out_img)
+    out_img = cv2.cvtColor(out_img[..., :3],
+                           cv2.COLOR_LAB2RGB)
     out_img *= 255
     out_img = cv2.resize(out_img, (input_img.shape[1], input_img.shape[0]))
     out_img = add_alpha(out_img, input_img)
