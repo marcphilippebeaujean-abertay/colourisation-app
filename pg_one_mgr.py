@@ -4,6 +4,7 @@ from img_processing import load_to_canvas, cv2_to_tk_img
 from image_frame import ImageFrame
 from output_frame import OutputFrame
 from model_picker import ModelPicker
+import numpy as np
 import os
 
 
@@ -80,8 +81,11 @@ class ImageUploadPageManager(PageManager):
         self.pred_data = prediction_data
 
     def update_brightness(self, incrementing):
-        if incrementing:
-            self.pred_data.multi_factor += 0.05
-        else:
-            self.pred_data.multi_factor -= 0.05
+        self.pred_data.update_brightness(incrementing)
+        if np.amax(self.pred_data.get_multiplied_channels()) > 1.0:
+            self.pred_data.update_brightness(False)
+            return
+        if np.amax(self.pred_data.get_multiplied_channels()) < 0.0:
+            self.pred_data.update_brightness(True)
+            return
         self.output_img.on_output_generated(prediction_data=self.pred_data)

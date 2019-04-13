@@ -89,7 +89,6 @@ class SecondPageWidgetManager(PageManager):
         resize_arr[0] = rand_img_ab
         pred = PredictionData(ground_truth,
                               resize_arr,
-                              1.0,
                               'Base Case')
         return pred
 

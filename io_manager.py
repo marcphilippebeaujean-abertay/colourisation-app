@@ -41,7 +41,7 @@ class IOManager:
         toggle_b = ToggleButton(master, client=self, active=False)
         toggle_b.place(relx=0.55, rely=0.02, anchor=N)
         self.toggle_btns = [toggle_a, toggle_b]
-        self.intensity_toggle = ClrIntensityToggle(master, self.page)
+        self.intensity_toggle = ClrIntensityToggle(master, self)
 
     def periodic_call(self):
         if self.output_queue.empty() is False:

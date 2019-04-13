@@ -46,10 +46,8 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
         net_input = [net_input, label_reshaped]
     pred = model.predict(net_input)
     ground_truth = None if pp_img.shape[2] < 2 else pp_img[..., 1:]
-    multi_fact = 1.05 if label is None else 1.00
     final_pred = PredictionData(input_img,
                                 pred,
-                                multi_fact,
                                 true_model_names[model_name])
     return final_pred
 
