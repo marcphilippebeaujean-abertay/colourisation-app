@@ -74,10 +74,17 @@ def process_net_output(net_output, original_image, target_size=None):
         if target_size != None:
             original_image = cv2.resize(original_image,
                                         target_size)
-    fin_output_lab = rgb2lab(original_image[..., :3])
+    fin_output_lab = cv2.cvtColor(original_image[..., :3],
+                                  cv2.COLOR_RGB2LAB)
+    fin_output_lab = fin_output_lab.astype(np.float32)
+    # processing required by OpenCV to convert the 8bit images
+    # back into the real LAB colourspace values
+    fin_output_lab[..., :1] /= 255
+    fin_output_lab[..., :1] *= 100
     # use luminance from original image
     final_output[..., :1] = fin_output_lab[..., :1]
-    final_output = lab2rgb(final_output)
+    final_output = cv2.cvtColor(final_output,
+                                cv2.COLOR_LAB2RGB)
     # denormalize rgb output (will be in range 0 - 1)
     final_output *= 255
     # apply alpha channel if necessary
