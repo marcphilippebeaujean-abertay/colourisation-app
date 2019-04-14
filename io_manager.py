@@ -78,8 +78,10 @@ class IOManager:
                                                 self.output_queue)
         else:
             new_frame = SetPredictionManager(self.master,
-                                             self.input_queue,
-                                             self.output_queue)
+                                             self)
+        for btn in self.toggle_btns:
+            btn.active = (self.cur_page_id == btn.target_page)
+            btn.update_icon()
         if self.cur_page_id != 0:
             self.intensity_toggle.hide_buttons()
         self.pred_thread.multi_pred = (self.cur_page_id == 1)
