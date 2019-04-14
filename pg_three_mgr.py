@@ -1,8 +1,9 @@
 from tkinter import *
 from image_frame import ImageFrame
 from pg_one_mgr import PageManager
-from img_processing import process_set_output
+from img_processing import create_image_stack, cv2_to_tk_img
 import os
+import numpy as np
 
 
 class SetPredictionManager(PageManager):
@@ -40,7 +41,8 @@ class SetPredictionManager(PageManager):
 
     def on_prediction_received(self, pred_data):
         # 0 = output_images, 1 = predicted chrominance, 2 = mse
-        self.output_img.update_img(PhotoImage(file=os.path.join(os.getcwd(),
-                                                                'images',
-                                                                'icons',
-                                                                'blank.png')))
+        image_stack = create_image_stack(pred_data[0])
+        image_stack = cv2_to_tk_img(image_stack)
+        self.output_img.update_img(image_stack)
+        self.stats['MSE'] = pred_data[2]
+

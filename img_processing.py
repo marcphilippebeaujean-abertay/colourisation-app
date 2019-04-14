@@ -93,19 +93,19 @@ def process_net_output(net_output, original_image, target_size=None):
     return cv2_to_tk_img(np.uint8(final_output))
 
 def process_set_output(normed_output):
-    final_output = np.zeros(normed_output.shape)
     # create copy of output array (should contain luminance
     # and predicted chrominance from network
-    final_output = normed_output
+    final_output = np.copy(normed_output)
     denormalize_channel(0, 100, final_output[..., :1])
     denormalize_channel(127, 128, final_output[..., 1:2])
     denormalize_channel(128, 127, final_output[..., 2:])
     final_output = final_output.astype(np.float32)
     # Convert final output images to rgb
     for i in range(len(final_output)):
-        img = final_output[i]
-        final_output[i] = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
+        final_output[i] = cv2.cvtColor(final_output[i], cv2.COLOR_LAB2RGB)
+    final_output *= 255
     return final_output
+
 
 def cv2_to_tk_img(img):
     tk_img = Image.fromarray(np.uint8(img))
@@ -124,3 +124,12 @@ def generate_chrominance(ab, input_img):
     out_img = cv2.resize(out_img, (input_img.shape[1], input_img.shape[0]))
     out_img = add_alpha(out_img, input_img)
     return cv2_to_tk_img(np.uint8(out_img))
+
+
+def create_image_stack(imgs):
+    if len(imgs) > 100:
+        imgs = imgs[:100]
+    img_rows, img_cols = imgs.shape[1], imgs.shape[2]
+    imgs = imgs.reshape((10, 10, img_rows, img_cols, 3))
+    imgs = np.vstack([np.hstack(i) for i in imgs])
+    return imgs
