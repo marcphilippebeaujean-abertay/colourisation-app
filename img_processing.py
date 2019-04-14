@@ -92,6 +92,20 @@ def process_net_output(net_output, original_image, target_size=None):
         final_output = add_alpha(final_output, original_image)
     return cv2_to_tk_img(np.uint8(final_output))
 
+def process_set_output(normed_output):
+    final_output = np.zeros(normed_output.shape)
+    # create copy of output array (should contain luminance
+    # and predicted chrominance from network
+    final_output = normed_output
+    denormalize_channel(0, 100, final_output[..., :1])
+    denormalize_channel(127, 128, final_output[..., 1:2])
+    denormalize_channel(128, 127, final_output[..., 2:])
+    final_output = final_output.astype(np.float32)
+    # Convert final output images to rgb
+    for i in range(len(final_output)):
+        img = final_output[i]
+        final_output[i] = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
+    return final_output
 
 def cv2_to_tk_img(img):
     tk_img = Image.fromarray(np.uint8(img))

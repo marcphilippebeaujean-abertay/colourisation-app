@@ -1,5 +1,5 @@
 from keras.models import model_from_json
-from img_processing import prepare_for_prediction, process_net_output, generate_chrominance
+from img_processing import prepare_for_prediction, process_set_output
 from threading import Thread
 from prediction_data import PredictionData
 from time import sleep, time
@@ -54,7 +54,24 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     return final_pred
 
 
+def load_set_prediction(model_name='c_ae_model'):
+    pred = np.load(os.path.join(os.getcwd(),
+                                'test_data',
+                                f'pred_{model_name}.npy'))
+    data = np.load(os.path.join(os.getcwd(),
+                                'test_data',
+                                'testing_data.npy'))
+    output = np.empty(data.shape)
+    output[..., :1] = data[..., :1]
+    output[..., 1:] = pred
+    mse = np.square(np.subtract(pred, data[..., 1:])).mean()
+    output_images = process_set_output(output)
+    return output_images, pred, mse
+
+
 def generate_set_prediction(model_name='c_ae_model'):
+    # deprecated function - making prediction on whole test set
+    # computationally too expensive for most machines
     model_path = os.path.join(os.getcwd(), 'model_info', model_name)
     model = load_model(model_path)
     data = np.load(os.path.join(os.getcwd(),
@@ -96,7 +113,7 @@ class PredictionThread(Thread):
                             self.__put_pred(model_dir, img)
                 elif self.pred_mode == pred_modes[2]:
                     # generate a prediction for entire test set
-                    pred_data = generate_set_prediction(queue_data[1])
+                    pred_data = load_set_prediction(queue_data[1])
                     self.output_queue.put(pred_data)
                 else:
                     # queue data 1 determines the model if it is predefined

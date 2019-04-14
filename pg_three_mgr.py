@@ -1,6 +1,7 @@
 from tkinter import *
 from image_frame import ImageFrame
 from pg_one_mgr import PageManager
+from img_processing import process_set_output
 import os
 
 
@@ -23,11 +24,23 @@ class SetPredictionManager(PageManager):
                                 rely=0.8915,
                                 anchor=N)
         self.queue = queue
+        self.stats = {
+            'MSE': 0,
+            'Mean': 0,
+            'Max': 0,
+            'Min': 0,
+            'Std. Dev.': 0
+            }
+        self.stats_toggle = None
 
     def on_new_model_selected(self, *kwargs):
         self.queue.put((None,
                         self.tk_model_dir.get()))
         self.output_img.init_animation(self.output_img.loading_anim().__next__)
 
-    def on_prediction_received(self, prediction_data):
-        print('hello world')
+    def on_prediction_received(self, pred_data):
+        # 0 = output_images, 1 = predicted chrominance, 2 = mse
+        self.output_img.update_img(PhotoImage(file=os.path.join(os.getcwd(),
+                                                                'images',
+                                                                'icons',
+                                                                'blank.png')))
