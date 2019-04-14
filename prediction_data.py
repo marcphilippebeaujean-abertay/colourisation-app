@@ -26,7 +26,7 @@ class PredictionData:
                      np.mean(self.ab_channels[..., 1:])),
             'Max': (np.amax(self.ab_channels[..., :1]),
                     np.amax(self.ab_channels[..., 1:])),
-            'Min': (np.amax(self.ab_channels[..., :1]),
+            'Min': (np.amin(self.ab_channels[..., :1]),
                     np.amin(self.ab_channels[..., 1:])),
             'Std. Dev.': (np.std(self.ab_channels[..., :1]),
                       np.std(self.ab_channels[..., 1:]))
