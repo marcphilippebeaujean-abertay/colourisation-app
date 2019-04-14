@@ -5,9 +5,11 @@ import os
 
 
 class SetPredictionManager(PageManager):
-    def __init__(self, master, is_active, client, width=600, height=400):
-        Frame.__init__(self, master, width=width, height=height)
+    def __init__(self, master, client, width=600, height=400):
+        PageManager.__init__(self, master, True, width=width, height=height)
+        self.master = master
+        self.client = client
         # define default widget images
         self.source_img = ImageFrame(self,
-                                     E,
+                                     CENTER,
                                      None)

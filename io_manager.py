@@ -1,5 +1,6 @@
 from pg_one_mgr import ImageUploadPageManager
 from pg_two_mgr import SecondPageWidgetManager
+from pg_three_mgr import SetPredictionManager
 from queue import Queue
 from prediction_thread import PredictionThread
 from tkinter import *
@@ -35,12 +36,13 @@ class IOManager:
         self.pred_thread.start()
         # create periodic call that checks for predictions
         self.periodic_call()
+        self.toggle_btns = []
         # toggle button used to switch between pages
-        toggle_a = ToggleButton(0, master, client=self, active=True)
-        toggle_a.place(relx=0.45, rely=0.02, anchor=N)
-        toggle_b = ToggleButton(1, master, client=self, active=False)
-        toggle_b.place(relx=0.55, rely=0.02, anchor=N)
-        self.toggle_btns = [toggle_a, toggle_b]
+        for i in range(3):
+            active = True if i is 0 else False
+            toggle_btn = ToggleButton(i, master, client=self, active=active)
+            toggle_btn.place(relx=0.4+i*0.1, rely=0.02, anchor=N)
+            self.toggle_btns.append(toggle_btn)
         self.intensity_toggle = ClrIntensityToggle(master, self)
 
     def periodic_call(self):
@@ -69,11 +71,15 @@ class IOManager:
             new_frame = ImageUploadPageManager(self.master,
                                                self.input_queue,
                                                self)
-        else:
+        elif self.cur_page_id is 1:
             new_frame = SecondPageWidgetManager(self.master,
                                                 self,
                                                 self.input_queue,
                                                 self.output_queue)
+        else:
+            new_frame = SetPredictionManager(self.master,
+                                             self.input_queue,
+                                             self.output_queue)
         if self.cur_page_id != 0:
             self.intensity_toggle.hide_buttons()
         self.pred_thread.multi_pred = (self.cur_page_id == 1)
