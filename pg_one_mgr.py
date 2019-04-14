@@ -17,9 +17,6 @@ class PageManager(Frame):
         self.is_pred_pending = False
         self.pred_data = None
 
-    def on_page_switch(self):
-        self.is_active = not self.is_active
-
     def on_prediction_received(self, prediction, chrom):
         raise RuntimeError('On prediction undefined')
 
@@ -33,14 +30,14 @@ class ImageUploadPageManager(PageManager):
                                      os.path.join(os.getcwd(),
                                                   'images',
                                                   'icons',
-                                                  'upload_logo.png'))
+                                                  'upload_logo_small.png'))
         # generate model output canvas/frame
         self.output_img = OutputFrame(self,
                                       W,
                                       os.path.join(os.getcwd(),
                                                    'images',
                                                    'icons',
-                                                   'eye_logo.png'))
+                                                   'blank.png'))
         # reference to threading queue
         self.input_queue = queue
         # add button for configuring images

@@ -7,8 +7,9 @@ import numpy as np
 
 
 class SetPredictionManager(PageManager):
-    def __init__(self, master, client, queue, pred_mode='set_pred', width=600, height=400):
+    def __init__(self, master, client, queue, pred_mode='set_pred', width=900, height=400):
         PageManager.__init__(self, master, client, pred_mode, width=width, height=height)
+        self.configure(padx=300)
         # define default widget images
         self.output_img = ImageFrame(self,
                                      CENTER,
@@ -32,7 +33,22 @@ class SetPredictionManager(PageManager):
             'Min': 0,
             'Std. Dev.': 0
             }
-        self.stats_toggle = None
+        self.should_shuffle = BooleanVar()
+        self.should_shuffle.set(False)
+        self.shuffle_btn = Checkbutton(
+            self, text="Shuffle", variable=self.should_shuffle,
+        )
+        self.shuffle_btn.place(relx=1.12,
+                               rely=0,
+                               anchor=N)
+        self.show_stats = BooleanVar()
+        self.show_stats.set(False)
+        self.show_stats_btn = Checkbutton(
+            self, text="Show Stats", variable=self.show_stats,
+        )
+        self.show_stats_btn.place(relx=1.12,
+                               rely=0.3,
+                               anchor=N)
 
     def on_new_model_selected(self, *kwargs):
         self.queue.put((None,
@@ -41,7 +57,10 @@ class SetPredictionManager(PageManager):
 
     def on_prediction_received(self, pred_data):
         # 0 = output_images, 1 = predicted chrominance, 2 = mse
-        image_stack = create_image_stack(pred_data[0])
+        img_data = pred_data[0]
+        if self.should_shuffle.get():
+            np.random.shuffle(img_data)
+        image_stack = create_image_stack(img_data)
         image_stack = cv2_to_tk_img(image_stack)
         self.output_img.update_img(image_stack)
         self.stats['MSE'] = pred_data[2]
