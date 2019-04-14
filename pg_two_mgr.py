@@ -9,8 +9,8 @@ import numpy as np
 
 
 class SecondPageWidgetManager(PageManager):
-    def __init__(self, master, client, input_queue, out_queue):
-        super().__init__(master, False, client)
+    def __init__(self, master, client, input_queue, out_queue, pred_mode='multi_pred'):
+        super().__init__(master, client, pred_mode)
         self.master = master
         self.output_displays = []
         self.output_preds = []

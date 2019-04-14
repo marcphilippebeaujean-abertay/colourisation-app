@@ -2,7 +2,7 @@ from keras.models import model_from_json
 from img_processing import prepare_for_prediction, process_net_output, generate_chrominance
 from threading import Thread
 from prediction_data import PredictionData
-from time import sleep
+from time import sleep, time
 import os
 import numpy as np
 
@@ -15,6 +15,8 @@ true_model_names = {
     'dil_ae_model': 'Dilated AE',
     'lat_ae_model': 'Latent Vec. AE'
 }
+
+pred_modes = ['single_image', 'multi_pred', 'set_pred']
 
 
 def load_model(model_dir):
@@ -52,12 +54,31 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
     return final_pred
 
 
+def generate_set_prediction(model_name='c_ae_model'):
+    model_path = os.path.join(os.getcwd(), 'model_info', model_name)
+    model = load_model(model_path)
+    data = np.load(os.path.join(os.getcwd(),
+                                'test_data',
+                                'testing_data'))
+    model_inputs = data[..., :1]
+    if model_name == 'cont_ae_model':
+        labels = np.load(os.path.join(os.getcwd(),
+                                      'test_data',
+                                      'testing_labels'))
+        model_inputs = [data[..., :1], labels]
+    start_time = time()
+    pred = model.predict(model_inputs)
+    elapsed_time = time() - start_time
+    mse = np.square(np.subtract(pred, data[..., 1:])).mean()
+    return pred, elapsed_time, mse
+
+
 class PredictionThread(Thread):
     def __init__(self, input_queue, output_queue):
         super().__init__()
         self.input_queue = input_queue
         self.output_queue = output_queue
-        self.multi_pred = False
+        self.pred_mode = pred_modes[0]
         self.model_dirs = os.listdir(os.path.join(os.getcwd(), 'model_info'))
 
     def run(self):
@@ -66,12 +87,17 @@ class PredictionThread(Thread):
             if self.input_queue.empty() is False:
                 queue_data = self.input_queue.get()
                 img = queue_data[0]
-                if self.multi_pred:
+                if self.pred_mode == pred_modes[1]:
+                    # generate a comparative multi-image prediction
                     for model_dir in self.model_dirs:
                         if model_dir == 'cont_ae_model':
                             self.__put_pred(model_dir, img, queue_data[2])
                         else:
                             self.__put_pred(model_dir, img)
+                elif self.pred_mode == pred_modes[2]:
+                    # generate a prediction for entire test set
+                    pred_data = generate_set_prediction(queue_data[1])
+
                 else:
                     # queue data 1 determines the model if it is predefined
                     self.__put_pred(queue_data[1], img)

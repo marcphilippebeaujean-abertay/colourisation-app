@@ -1,15 +1,18 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from img_processing import load_to_canvas, cv2_to_tk_img
+from prediction_thread import pred_modes
 from image_frame import ImageFrame
 from output_frame import OutputFrame
 import os
 
 
 class PageManager(Frame):
-    def __init__(self, master, is_active, client, width=600, height=400):
+    def __init__(self, master, client, pred_mode, width=600, height=400):
         Frame.__init__(self, master, width=width, height=height)
-        self.is_active = is_active
+        self.pred_mode = pred_mode
+        if self.pred_mode not in pred_modes:
+            raise ValueError('Invalid prediction mode!s')
         self.client = client
         self.is_pred_pending = False
         self.pred_data = None
@@ -22,8 +25,8 @@ class PageManager(Frame):
 
 
 class ImageUploadPageManager(PageManager):
-    def __init__(self, master, queue, client):
-        PageManager.__init__(self, master, True, client)
+    def __init__(self, master, queue, client, pred_mode='single_image'):
+        PageManager.__init__(self, master, client, pred_mode)
         # define default widget images
         self.source_img = ImageFrame(self,
                                      E,

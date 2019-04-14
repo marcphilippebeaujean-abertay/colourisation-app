@@ -84,8 +84,8 @@ class IOManager:
             btn.update_icon()
         if self.cur_page_id != 0:
             self.intensity_toggle.hide_buttons()
-        self.pred_thread.multi_pred = (self.cur_page_id == 1)
         self.page = new_frame
+        self.pred_thread.pred_mode = self.page.pred_mode
         self.page.place(relx=0.5, rely=0.1, anchor=N)
 
     def notification_update(self, text, is_error=False):
