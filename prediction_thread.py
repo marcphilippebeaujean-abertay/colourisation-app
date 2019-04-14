@@ -59,12 +59,12 @@ def generate_set_prediction(model_name='c_ae_model'):
     model = load_model(model_path)
     data = np.load(os.path.join(os.getcwd(),
                                 'test_data',
-                                'testing_data'))
+                                'testing_data.npy'))
     model_inputs = data[..., :1]
     if model_name == 'cont_ae_model':
         labels = np.load(os.path.join(os.getcwd(),
                                       'test_data',
-                                      'testing_labels'))
+                                      'testing_labels.npy'))
         model_inputs = [data[..., :1], labels]
     start_time = time()
     pred = model.predict(model_inputs)
@@ -97,7 +97,7 @@ class PredictionThread(Thread):
                 elif self.pred_mode == pred_modes[2]:
                     # generate a prediction for entire test set
                     pred_data = generate_set_prediction(queue_data[1])
-
+                    self.output_queue.put(pred_data)
                 else:
                     # queue data 1 determines the model if it is predefined
                     self.__put_pred(queue_data[1], img)

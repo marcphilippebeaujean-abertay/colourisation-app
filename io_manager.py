@@ -78,7 +78,8 @@ class IOManager:
                                                 self.output_queue)
         else:
             new_frame = SetPredictionManager(self.master,
-                                             self)
+                                             self,
+                                             self.input_queue)
         for btn in self.toggle_btns:
             btn.active = (self.cur_page_id == btn.target_page)
             btn.update_icon()
