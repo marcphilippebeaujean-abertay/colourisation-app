@@ -88,7 +88,6 @@ class ImageUploadPageManager(PageManager):
                 self.client.notification_update('Failed to load Image!', True)
             return
 
-
     def on_prediction_received(self, prediction_data):
         self.output_img.on_output_generated(prediction_data)
         self.is_pred_pending = False

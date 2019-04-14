@@ -36,9 +36,9 @@ class IOManager:
         # create periodic call that checks for predictions
         self.periodic_call()
         # toggle button used to switch between pages
-        toggle_a = ToggleButton(master, client=self, active=True)
+        toggle_a = ToggleButton(0, master, client=self, active=True)
         toggle_a.place(relx=0.45, rely=0.02, anchor=N)
-        toggle_b = ToggleButton(master, client=self, active=False)
+        toggle_b = ToggleButton(1, master, client=self, active=False)
         toggle_b.place(relx=0.55, rely=0.02, anchor=N)
         self.toggle_btns = [toggle_a, toggle_b]
         self.intensity_toggle = ClrIntensityToggle(master, self)
@@ -54,7 +54,7 @@ class IOManager:
     def end_application(self):
         self.pred_thread.running = False
 
-    def switch_page(self):
+    def switch_page(self, target_page):
         if self.page.is_pred_pending:
             self.notification_update('Please wait for process to finish!', True)
             return
@@ -64,17 +64,17 @@ class IOManager:
         self.notification_label.configure(text='')
         self.page.destroy()
         new_frame = None
-        if self.cur_page_id is 1:
+        self.cur_page_id = target_page
+        if self.cur_page_id is 0:
             new_frame = ImageUploadPageManager(self.master,
                                                self.input_queue,
                                                self)
-            self.cur_page_id = 0
         else:
             new_frame = SecondPageWidgetManager(self.master,
                                                 self,
                                                 self.input_queue,
                                                 self.output_queue)
-            self.cur_page_id = 1
+        if self.cur_page_id != 0:
             self.intensity_toggle.hide_buttons()
         self.pred_thread.multi_pred = (self.cur_page_id == 1)
         self.page = new_frame

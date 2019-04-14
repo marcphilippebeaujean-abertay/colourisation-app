@@ -39,6 +39,7 @@ class SecondPageWidgetManager(PageManager):
             pred_disp.reset_display()
         self.rand_sample_id = random.randint(0, 99)
         img = self.sample_images[self.rand_sample_id]
+        print(self.rand_sample_id)
         label = self.sample_labels[self.rand_sample_id]
         self.is_pred_pending = True
         self.predictions_pending = 4
