@@ -27,9 +27,17 @@ class SecondPageWidgetManager(PageManager):
         self.init_btn.place(relx=0.5, rely=0.0, anchor=N)
         self.input_queue = input_queue
         self.out_queue = out_queue
-        self.rand_sample_id = 0
         self.predictions_pending = 0
         self.ground_truth_id = 0
+        self.cur_img_id = 0
+        self.should_shuffle = BooleanVar()
+        self.should_shuffle.set(False)
+        self.shuffle_btn = Checkbutton(
+            self, text="Shuffle", variable=self.should_shuffle,
+        )
+        self.shuffle_btn.place(relx=0.7,
+                               rely=0,
+                               anchor=N)
 
     def generate_quiz_images(self):
         if self.predictions_pending > 0:
@@ -37,10 +45,10 @@ class SecondPageWidgetManager(PageManager):
         self.output_preds = [None]
         for pred_disp in self.output_displays:
             pred_disp.reset_display()
-        self.rand_sample_id = random.randint(0, 99)
-        img = self.sample_images[self.rand_sample_id]
-        print(self.rand_sample_id)
-        label = self.sample_labels[self.rand_sample_id]
+        if self.should_shuffle.get():
+            self.cur_img_id = random.randint(0, 99)
+        img = self.sample_images[self.cur_img_id]
+        label = self.sample_labels[self.cur_img_id]
         self.is_pred_pending = True
         self.predictions_pending = 4
         self.input_queue.put((img, '', label))
@@ -62,11 +70,15 @@ class SecondPageWidgetManager(PageManager):
         for i, pred in enumerate(self.output_preds):
             if pred is None:
                 # this is the ground truth
-                img = self.sample_images[self.rand_sample_id]
+                img = self.sample_images[self.cur_img_id]
                 self.output_displays[i].update_from_pred(img, True)
                 self.ground_truth_id = i
             else:
                 self.output_displays[i].update_from_pred(pred)
+        # increment to the next image after all predictions have been made
+        self.cur_img_id += 1
+        if self.cur_img_id >= 100:
+            self.cur_img_id = 0
 
     def on_pic_selected(self, selected_id):
         for i, pred_disp in enumerate(self.output_displays):
@@ -77,9 +89,9 @@ class SecondPageWidgetManager(PageManager):
         self.output_displays[self.ground_truth_id].highlight_selection()
 
     def generate_base_case(self):
-        ground_truth = self.sample_images[self.rand_sample_id]
+        ground_truth = self.sample_images[self.cur_img_id]
         rand_ab_id = random.randint(0, 99)
-        while rand_ab_id == self.rand_sample_id:
+        while rand_ab_id == self.cur_img_id:
             rand_ab_id = random.randint(0, 99)
         random_img = self.sample_images[rand_ab_id]
         rand_img_lab = rgb2lab(random_img)

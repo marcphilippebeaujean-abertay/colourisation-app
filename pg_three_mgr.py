@@ -27,13 +27,7 @@ class SetPredictionManager(PageManager):
                                 rely=0.8915,
                                 anchor=N)
         self.queue = queue
-        self.stats = {
-            'MSE': 0,
-            'Mean': 0,
-            'Max': 0,
-            'Min': 0,
-            'Std. Dev.': 0
-            }
+        self.stats = None
         self.should_shuffle = BooleanVar()
         self.should_shuffle.set(False)
         self.shuffle_btn = Checkbutton(
@@ -56,6 +50,11 @@ class SetPredictionManager(PageManager):
         self.pred_pending = False
 
     def on_new_model_selected(self, *kwargs):
+        blank_img = ImageTk.PhotoImage(file=os.path.join(os.getcwd(),
+                                                         'images',
+                                                         'icons',
+                                                         'blank.png'))
+        self.output_img.update_img(blank_img)
         if self.pred_pending:
             return
         self.pred_pending = True
@@ -77,6 +76,8 @@ class SetPredictionManager(PageManager):
 
     def switch_display(self, *kwargs):
         if self.pred_pending:
+            return
+        if self.stats is None:
             return
         self.forget_stats()
         if self.show_stats.get() is True:

@@ -70,6 +70,9 @@ class MiniPredDisplay(Frame):
             self.canvas.configure(highlightbackground='red')
 
     def on_revealed(self):
+        self.btn.place(anchor=N,
+                       relx=self.position[0],
+                       rely=self.position[1] + 600)
         self.reveal_text.configure(text=self.model_name)
 
     def update_img(self, img_file):
