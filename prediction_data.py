@@ -3,8 +3,9 @@ from img_processing import process_net_output, generate_chrominance
 
 
 class PredictionData:
-    def __init__(self, input_img, ab_channels, model_name=''):
+    def __init__(self, input_img, ab_channels, pred_time=0, model_name=''):
         self.ab_channels = ab_channels
+        self.pred_time = pred_time
         self.input_img = input_img
         self.model_name = model_name
         self.channel_dist = None
@@ -29,7 +30,8 @@ class PredictionData:
             'Min': (np.amin(self.ab_channels[..., :1]),
                     np.amin(self.ab_channels[..., 1:])),
             'Std. Dev.': (np.std(self.ab_channels[..., :1]),
-                      np.std(self.ab_channels[..., 1:]))
+                          np.std(self.ab_channels[..., 1:])),
+            'Pred. Time': self.pred_time
             }
         return dict
 

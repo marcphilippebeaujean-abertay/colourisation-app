@@ -46,10 +46,13 @@ def generate_prediction(input_img, model_name='c_ae_model', label=None):
         label_reshaped = np.empty((1, len(label)))
         label_reshaped[0] = label
         net_input = [net_input, label_reshaped]
+    start_time = time()
     pred = model.predict(net_input)
+    elapsed_time = time() - start_time
     ground_truth = None if pp_img.shape[2] < 2 else pp_img[..., 1:]
     final_pred = PredictionData(input_img,
                                 pred,
+                                round(elapsed_time, 3),
                                 true_model_names[model_name])
     return final_pred
 

@@ -79,6 +79,15 @@ class OutputFrame(ImageFrame):
 
             data = self.prediction_data.stats[key]
 
+            if key == 'Pred. Time':
+                pred_time = Text(self.canvas, height=1, width=8)
+                pred_time.insert('1.0', f'{data}s')
+                pred_time.place(relx=first_col_x + col_spread,
+                                rely=row_pos,
+                                anchor=N)
+                self.stats_txt.append(val_a)
+                return
+
             val_a = Text(self.canvas, height=1, width=8)
             val_a.insert('1.0', f'{data[0]}')
             val_a.place(relx=first_col_x+col_spread,
