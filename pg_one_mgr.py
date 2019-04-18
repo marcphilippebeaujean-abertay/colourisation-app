@@ -43,6 +43,11 @@ class ImageUploadPageManager(PageManager):
                                                    'images',
                                                    'icons',
                                                    'blank.png'))
+        model_dropd_label = Label(master)
+        model_dropd_label.configure(text='Model:')
+        model_dropd_label.place(relx=0.19,
+                                rely=0.795,
+                                anchor=N)
         # reference to threading queue
         self.input_queue = queue
         # add button for configuring images
