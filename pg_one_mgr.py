@@ -6,6 +6,11 @@ from image_frame import ImageFrame
 from output_frame import OutputFrame
 import os
 
+model_name = {
+    'Conv. AE':'c_ae_model',
+    'Dilated AE': 'dil_ae_model',
+    'Latent Vec. AE': 'lat_ae_model'
+}
 
 class PageManager(Frame):
     def __init__(self, master, client, pred_mode, width=600, height=400):
@@ -48,8 +53,10 @@ class ImageUploadPageManager(PageManager):
                           rely=0.82,
                           anchor=N)
         self.tk_model_dir = StringVar(master)
-        choices = {'c_ae_model', 'dil_ae_model', 'lat_ae_model'}
-        self.tk_model_dir.set('c_ae_model')
+        choices = {list(model_name.keys())[0],
+                   list(model_name.keys())[1],
+                   list(model_name.keys())[2]}
+        self.tk_model_dir.set('Conv. AE')
         self.tk_model_dir.trace('w', self.on_new_model_selected)
 
         self.model_toggle = OptionMenu(self.source_img.canvas, self.tk_model_dir, *choices)
@@ -78,7 +85,7 @@ class ImageUploadPageManager(PageManager):
                                             (self.source_img.frame_dim-5))
                 # add image to the queue
                 self.input_queue.put((img_source,
-                                      self.tk_model_dir.get()))
+                                      model_name[self.tk_model_dir.get()]))
                 # apply widget updates
                 self.source_img.update_img(cv2_to_tk_img(img_source))
                 self.client.notification_update('')
