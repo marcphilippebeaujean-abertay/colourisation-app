@@ -61,7 +61,7 @@ class ImageUploadPageManager(PageManager):
         choices = {list(model_name.keys())[0],
                    list(model_name.keys())[1],
                    list(model_name.keys())[2]}
-        self.tk_model_dir.set('Conv. AE')
+        self.tk_model_dir.set(list(model_name.keys())[0])
         self.tk_model_dir.trace('w', self.on_new_model_selected)
 
         self.model_toggle = OptionMenu(self.source_img.canvas, self.tk_model_dir, *choices)
